@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:async' show Future;
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qrolo/qrolo.dart';
 
@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
+    String? platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       platformVersion = await Qrolo.platformVersion;
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      _platformVersion = platformVersion ?? 'no-version-found';
     });
   }
 

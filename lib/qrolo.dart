@@ -7,8 +7,7 @@ class Qrolo {
   static const MethodChannel _channel = MethodChannel('qrolo');
 
   static Future<String?> get platformVersion async {
-    final String? version =
-        await _channel.invokeMethod<String>('getPlatformVersion');
+    final version = await _channel.invokeMethod<String>('getPlatformVersion');
 
     return version;
   }
