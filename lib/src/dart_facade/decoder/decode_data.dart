@@ -1,5 +1,5 @@
 @JS()
-library node_modules.jsqr.dist.decoder.decodeData;
+library decoder_decode_data;
 
 import 'dart:js';
 

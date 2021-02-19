@@ -3,8 +3,8 @@ library dist;
 
 import 'dart:typed_data';
 
-import "package:js/js.dart";
-import 'package:qrolo/src/dart_custom/decode_data.dart';
+import 'package:js/js.dart' show JS, anonymous;
+import 'package:qrolo/src/dart_facade/decoder/decode_data.dart' show Chunks;
 
 @anonymous
 @JS()
@@ -28,8 +28,8 @@ abstract class QRCode {
     }*/
       get location;
   external set location(
-      dynamic
-          /*{
+    dynamic
+        /*{
         topRightCorner: Point;
         topLeftCorner: Point;
         bottomRightCorner: Point;
@@ -39,13 +39,14 @@ abstract class QRCode {
         bottomLeftFinderPattern: Point;
         bottomRightAlignmentPattern?: Point;
     }*/
-          v);
-  external factory QRCode(
-      {List<num> binaryData,
-      String data,
-      Chunks chunks,
-      dynamic
-          /*{
+        v,
+  );
+  external factory QRCode({
+    List<num> binaryData,
+    String data,
+    Chunks chunks,
+    dynamic
+        /*{
         topRightCorner: Point;
         topLeftCorner: Point;
         bottomRightCorner: Point;
@@ -55,7 +56,8 @@ abstract class QRCode {
         bottomLeftFinderPattern: Point;
         bottomRightAlignmentPattern?: Point;
     }*/
-          location});
+        location,
+  });
 }
 
 @anonymous
@@ -63,13 +65,17 @@ abstract class QRCode {
 abstract class Options {
   external String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ get inversionAttempts;
   external set inversionAttempts(
-      String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ v);
-  external factory Options(
-      {String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ inversionAttempts});
+    String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ v,
+  );
+  external factory Options({
+    String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ inversionAttempts,
+  });
 }
 
 @JS()
 external QRCode /*QRCode|Null*/ jsQR(
-    Uint8ClampedList /* Uint8ClampedArray */ data, num width, num height,
-    [Options
-        providedOptions]); /* WARNING: export assignment not yet supported. */
+  Uint8ClampedList /* Uint8ClampedArray */ data,
+  num width,
+  num height, [
+  Options providedOptions,
+]); /* WARNING: export assignment not yet supported. */

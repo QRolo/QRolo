@@ -4,7 +4,7 @@ library jsqr;
 import 'dart:typed_data';
 
 import 'package:js/js.dart';
-import 'package:qrolo/src/dart_custom/decode_data.dart';
+import 'package:qrolo/src/dart_facade/decoder/decode_data.dart' show Chunks;
 
 @anonymous
 @JS()
