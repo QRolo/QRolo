@@ -6,9 +6,10 @@ import 'package:flutter/services.dart';
 class Qrolo {
   static const MethodChannel _channel = MethodChannel('qrolo');
 
-  static Future<String> get platformVersion async {
-    final String version =
-        await _channel.invokeMethod('getPlatformVersion') as String;
+  static Future<String?> get platformVersion async {
+    final String? version =
+        await _channel.invokeMethod<String>('getPlatformVersion');
+
     return version;
   }
 }
