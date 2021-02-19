@@ -44,7 +44,7 @@ abstract class Chunk extends BaseChunk {
 @JS()
 abstract class ByteChunk extends BaseChunk {
   @override
-  external dynamic /*Mode.Byte|Mode.Kanji*/ get type;
+  external String /*Mode.Byte|Mode.Kanji*/ get type;
   @override
   external set type(dynamic /*Mode.Byte|Mode.Kanji*/ v);
   external List<num> get bytes;
