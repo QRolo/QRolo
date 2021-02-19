@@ -20,3 +20,17 @@ linter:
     - unrelated_type_equality_checks
     - valid_regexps
     - prefer_single_quotes
+    # - public_member_api_docs
+    - avoid_escaping_inner_quotes
+    - avoid_catches_without_on_clauses
+    - avoid_js_rounded_ints
+    - avoid_returning_null
+    - avoid_returning_this
+    - close_sinks
+    - prefer_adjacent_string_concatenation
+    - no_adjacent_strings_in_list
+    - unawaited_futures
+    - prefer_final_locals
+    - prefer_final_fields
+    # Good practice for public widget API. Otherwise less helpful in apps
+    - use_key_in_widget_constructors
