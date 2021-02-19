@@ -1,7 +1,10 @@
 @JS()
 library jsqr;
 
+import 'dart:typed_data';
+
 import 'package:js/js.dart';
+import 'package:qrolo/src/dart_custom/decode_data.dart';
 
 @anonymous
 @JS()
@@ -37,12 +40,12 @@ abstract class QRCode {
         bottomRightAlignmentPattern?: Point;
     }*/
           v);
-  external factory QRCode(
-      {List<num> binaryData,
-      String data,
-      Chunks chunks,
-      dynamic
-          /*{
+  external factory QRCode({
+    List<num> binaryData,
+    String data,
+    Chunks chunks,
+    dynamic
+        /*{
         topRightCorner: Point;
         topLeftCorner: Point;
         bottomRightCorner: Point;
@@ -52,24 +55,22 @@ abstract class QRCode {
         bottomLeftFinderPattern: Point;
         bottomRightAlignmentPattern?: Point;
     }*/
-          location});
+        location,
+  });
 }
 
 @anonymous
 @JS()
 abstract class Options {
-  external String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ get
-inversionAttempts;
+  external String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ get inversionAttempts;
   external set inversionAttempts(
       String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ v);
   external factory Options(
-      {String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ inversio
-nAttempts});
+      {String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ inversionAttempts});
 }
 
 @JS()
 external QRCode /*QRCode|Null*/ jsQR(
-    Uint8ClampedArray data, num width, num height,
+    Uint8ClampedList /* Uint8ClampedArray */ data, num width, num height,
     [Options
         providedOptions]); /* WARNING: export assignment not yet supported. */
-

@@ -1,7 +1,10 @@
 @JS()
 library binarizer;
 
-import 'package:js/js.dart';
+/// For Uint8ClampedArray Uint8ClampedList
+import 'dart:typed_data' show Uint8ClampedList;
+
+import 'package:js/js.dart' show JS;
 
 @JS()
 external dynamic
@@ -12,5 +15,4 @@ external dynamic
     binarized: BitMatrix;
     inverted?: undefined;
 }*/
-    binarize(
-        Uint8ClampedArray data, num width, num height, bool returnInverted);
+    binarize(Uint8ClampedList data, num width, num height, bool returnInverted);

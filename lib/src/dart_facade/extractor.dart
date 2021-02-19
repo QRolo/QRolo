@@ -2,7 +2,8 @@
 library extractor;
 
 import 'package:js/js.dart';
-import '../BitMatrix.dart' show BitMatrix;
+import 'package:qrolo/src/dart_facade/locator.dart';
+import './BitMatrix.dart' show BitMatrix;
 
 @JS()
 external dynamic

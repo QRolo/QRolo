@@ -1,7 +1,10 @@
 @JS()
 library dist;
 
+import 'dart:typed_data';
+
 import "package:js/js.dart";
+import 'package:qrolo/src/dart_custom/decode_data.dart';
 
 @anonymous
 @JS()
@@ -67,6 +70,6 @@ abstract class Options {
 
 @JS()
 external QRCode /*QRCode|Null*/ jsQR(
-    Uint8ClampedArray data, num width, num height,
+    Uint8ClampedList /* Uint8ClampedArray */ data, num width, num height,
     [Options
         providedOptions]); /* WARNING: export assignment not yet supported. */

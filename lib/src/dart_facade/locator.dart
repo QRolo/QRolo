@@ -2,7 +2,7 @@
 library locator;
 
 import 'package:js/js.dart';
-import '../BitMatrix.dart' show BitMatrix;
+import './BitMatrix.dart' show BitMatrix;
 
 @anonymous
 @JS()

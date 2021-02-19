@@ -1,6 +1,8 @@
 @JS()
 library decoder.version;
 
+import 'dart:js';
+
 import 'package:js/js.dart';
 
 @anonymous
@@ -12,7 +14,7 @@ abstract class Version {
   external set versionNumber(num v);
   external List<num> get alignmentPatternCenters;
   external set alignmentPatternCenters(List<num> v);
-  external Array<
+  external JsArray<
       dynamic /*{
         ecCodewordsPerBlock: number;
         ecBlocks: Array<{
@@ -22,7 +24,7 @@ abstract class Version {
     }*/
       > get errorCorrectionLevels;
   external set errorCorrectionLevels(
-      Array<
+      JsArray<
               dynamic /*{
         ecCodewordsPerBlock: number;
         ecBlocks: Array<{
@@ -36,7 +38,7 @@ abstract class Version {
       {num infoBits,
       num versionNumber,
       List<num> alignmentPatternCenters,
-      Array<
+      JsArray<
               dynamic /*{
         ecCodewordsPerBlock: number;
         ecBlocks: Array<{
