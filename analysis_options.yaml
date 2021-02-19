@@ -1,0 +1,36 @@
+include: package:lint/analysis_options_package.yaml
+
+# https://www.dartlang.org/guides/language/analysis-options
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  exclude:
+    # workaround for https://github.com/dart-lang/sdk/issues/42910
+    - "example/**"
+
+# Source of linter options:
+# http://dart-lang.github.io/linter/lints/options/options.html
+linter:
+  rules:
+    - camel_case_types
+    - hash_and_equals
+    - iterable_contains_unrelated_type
+    - list_remove_unrelated_type
+    - unrelated_type_equality_checks
+    - valid_regexps
+    - prefer_single_quotes
+    # - public_member_api_docs
+    - avoid_escaping_inner_quotes
+    - avoid_catches_without_on_clauses
+    - avoid_js_rounded_ints
+    - avoid_returning_null
+    - avoid_returning_this
+    - close_sinks
+    - prefer_adjacent_string_concatenation
+    - no_adjacent_strings_in_list
+    - unawaited_futures
+    - prefer_final_locals
+    - prefer_final_fields
+    # Good practice for public widget API. Otherwise less helpful in apps
+    - use_key_in_widget_constructors
