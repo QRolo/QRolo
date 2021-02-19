@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 /// A web implementation of the Qrolo plugin.
-class QroloWeb {
+class QRoloWeb {
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
       'qrolo',
@@ -17,7 +17,7 @@ class QroloWeb {
       registrar,
     );
 
-    final pluginInstance = QroloWeb();
+    final pluginInstance = QRoloWeb();
     channel.setMethodCallHandler(pluginInstance.handleMethodCall);
   }
 

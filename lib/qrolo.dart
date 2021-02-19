@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 // ignore: avoid_classes_with_only_static_members
-class Qrolo {
+class QRolo {
   static const MethodChannel _channel = MethodChannel('qrolo');
 
   static Future<String?> get platformVersion async {

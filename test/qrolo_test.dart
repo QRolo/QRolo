@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await Qrolo.platformVersion, '42');
+    expect(await QRolo.platformVersion, '42');
   });
 }

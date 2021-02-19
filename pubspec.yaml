@@ -31,7 +31,7 @@ flutter:
   plugin:
     platforms:
       web:
-        pluginClass: QroloWeb
+        pluginClass: QRoloWeb
         fileName: qrolo_web.dart
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
