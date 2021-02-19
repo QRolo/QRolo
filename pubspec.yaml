@@ -1,12 +1,12 @@
 name: qrolo
 description: QR code scanning plugin with web compatibility! Nullsafe web QR scanner for Flutter web projects. Scan QR codes and capture images all from the comfort of your own desktop or mobile browser.
-version: 0.0.1-nullsafety.01
+version: 0.0.2-nullsafety.01.2.12.0-259.9.beta
 homepage: https://qrolo.github.io/
 repository: https://github.com/QRolo/QRolo
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.20.0"
+  sdk: ">=2.12.0-259.9.beta <3.0.0"
+  flutter: ">=1.26.0-17.5.pre"
 
 dependencies:
   flutter:
@@ -32,7 +32,6 @@ flutter:
       web:
         pluginClass: QroloWeb
         fileName: qrolo_web.dart
-
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -43,7 +42,6 @@ flutter:
   #
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
-
   # To add custom fonts to your plugin package, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

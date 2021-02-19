@@ -1,21 +1,10 @@
 # QRolo
 
-A QR code scanner plugin supporting Flutter web. Flutter web qr scanner.
+A nullsafe QR code scanner plugin supporting Flutter web. Flutter web qr scanner.
 
 Note script src usage in web/index.html
 
-
-
-
-
-
-
-
-
-
-
-
-
+Note that we are using the (not-quite) bleeding edge versions of Flutter Dart beta
 
 ## Getting Started
 
@@ -27,4 +16,3 @@ Android and/or iOS.
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-
