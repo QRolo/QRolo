@@ -1,3 +1,5 @@
+- Add linting
+
 ## 0.0.2-nullsafety.01.2.12.0-259.9.beta
 
 - Update dependencies to beta

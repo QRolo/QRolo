@@ -28,11 +28,10 @@ class QroloWeb {
     switch (call.method) {
       case 'getPlatformVersion':
         return getPlatformVersion();
-        break;
       default:
         throw PlatformException(
           code: 'Unimplemented',
-          details: 'qrolo for web doesn\'t implement \'${call.method}\'',
+          details: "qrolo for web doesn't implement '${call.method}'",
         );
     }
   }
