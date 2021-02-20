@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:html' as html
-    show DivElement, DomError, DomException, MediaStream, VideoElement, window;
-import 'dart:js_util' show promiseToFuture;
-
+    show DivElement, DomException, MediaStream, VideoElement, window;
+// dart:ui is valid use import platformViewRegistry
 // https://github.com/flutter/flutter/issues/41563
 // Alternative use universal_ui wrapper
 // ignore: unused_import
@@ -17,7 +16,7 @@ import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.
     show isCameraAvailableInMediaDevices;
 import 'package:qrolo/src/jsqr.dart';
 
-const int DEFAULT_SCAN_INTERVAL_MILLISECONDS = 500;
+const int defaultScanIntervalMilliseconds = 500;
 
 /// The QRolo scanner widget
 class QRolo extends StatefulWidget {
@@ -128,7 +127,7 @@ class _QRoloState extends State<QRolo> {
   /// Methods should not be exposed
   /// Maybe wrap this into the _web-only implementation as well
   void startContinuousScanningLoop({
-    int scanIntervalMs = DEFAULT_SCAN_INTERVAL_MILLISECONDS,
+    int scanIntervalMs = defaultScanIntervalMilliseconds,
   }) {
     /*
       1. Start camera media stream
