@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
 import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart'
     show isCameraAvailableInMediaDevices;
-import 'package:qrolo/src/jsqr.dart';
+import 'package:qrolo/src/jsqr.dart' show jsQR;
 
 const int defaultScanIntervalMilliseconds = 500;
 
@@ -157,7 +157,7 @@ class _QRoloState extends State<QRolo> {
     );
   }
 
-  Future<void> scanStream() async {
+  Future<String?> scanStream() async {
     // 1. Start camera stream and get back
     final videoStream = await callPlatformOpenMediaVideoStream();
 
@@ -165,7 +165,7 @@ class _QRoloState extends State<QRolo> {
       //
       debugPrint('Error accessing camera stream getUserMedia()');
 
-      return;
+      return null;
     }
     // Not assigned directly to allow local context null discrimination check
     // Otherwise technically the _cameraStream could be nulled right before use
@@ -216,7 +216,7 @@ class _QRoloState extends State<QRolo> {
 
     }
 
-    return;
+    return qrCode;
 
     // Catch DOMException
     // drawImage()
@@ -434,6 +434,11 @@ class _QRoloState extends State<QRolo> {
     int height,
   ) {
     // Use jsQR
+    jsQR(
+      data,
+      width,
+      height,
+    );
 
     return null;
   }
