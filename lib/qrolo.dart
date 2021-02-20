@@ -1,6 +1,14 @@
 import 'dart:async';
 import 'dart:html' as html
-    show DivElement, DomException, ImageData, MediaStream, VideoElement, window;
+    show
+        CanvasElement,
+        CanvasRenderingContext2D,
+        DivElement,
+        DomException,
+        ImageData,
+        MediaStream,
+        VideoElement,
+        window;
 import 'dart:typed_data';
 // dart:ui is valid use import platformViewRegistry
 // https://github.com/flutter/flutter/issues/41563
@@ -168,6 +176,8 @@ class _QRoloState extends State<QRolo> {
     // Periodically obtain rather than making a call each time
     // Performance
     // FP
+    // Assuming width and height data are flutter virtual int pixel size
+    // Otherwise it will mess up qr code data matrix
 
     final imageData = captureFrameFromStream(videoStream);
 
@@ -264,8 +274,11 @@ class _QRoloState extends State<QRolo> {
   }
 
   ///
-  /// Assumedly straight 0-255 1D array that is
-  /// transformed into calculation matrix based on width and height
+  /// Assumedly straight 0-255 1D array that is transformed into
+  /// calculation matrix based on width and height
+  ///
+  /// Could ostensibly be used for QR code check of any image data,
+  /// given the right transformation params
   String? getQRCodeFromData(
     Uint8ClampedList data,
     int width,
@@ -276,6 +289,8 @@ class _QRoloState extends State<QRolo> {
     return null;
   }
 
+  /// Helper wrapper
+  /// for compatibility with MediaStream ImageData
   String? getQRCodeFromImageDataFrame(
     html.ImageData image,
     int width,
