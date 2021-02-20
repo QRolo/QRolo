@@ -54,7 +54,26 @@ class _MyAppState extends State<MyApp> {
             Center(
               child: Text('Running on: $_platformVersion\n'),
             ),
+<<<<<<< HEAD
             QRolo()
+=======
+            SizedBox(height: 10),
+            ElevatedButton(
+              child: Text("Scan QR Code"),
+              onPressed: () {
+                _openScan(context);
+              },
+            ),
+            Container(
+              width: 640,
+              height: 480,
+
+              /// !IMPORTANT: This widget needs to be bound in a sized box or other container
+              /// Other Flutter throws unbound render flex hit test errors
+              child: QRolo(),
+            ),
+            SizedBox(height: 640, width: 480)
+>>>>>>> 3658869 (feat(example,-qrolo.dart): add sized box back to fix error render flex unbound hit test flutter)
           ],
         ),
       ),
