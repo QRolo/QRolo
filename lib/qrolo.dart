@@ -192,11 +192,7 @@ class _QRoloState extends State<QRolo> {
     final int width = videoElement.videoWidth;
     final int height = videoElement.videoHeight;
 
-    final html.ImageData imageData = captureFrameFromStream(
-      videoElement,
-      width,
-      height,
-    );
+    final html.ImageData imageData = captureFrameFromStream(videoElement);
 
     /* 
     if (imageData == null) {
@@ -362,16 +358,11 @@ class _QRoloState extends State<QRolo> {
   /// mutated by devor dynamic user responsive UI
   html.ImageData captureFrameFromStream(
     html.VideoElement videoElement,
-    int width,
-    int height,
   ) {
     // Creating a virtual canvas simply to capture imageData?
     final html.CanvasElement sizedDrawnCanvasContextualisedFrame =
         createPredrawnCanvasFrameContextFromVideoElement(
-      videoElement: videoElement,
-      width: width,
-      height: height,
-    );
+            videoElement: videoElement);
 
     // Seems superfluous to do this just to get imageData
     // Though lots of canvas utility
@@ -382,8 +373,8 @@ class _QRoloState extends State<QRolo> {
         sizedDrawnCanvasContextualisedFrame.context2D.getImageData(
       topLeftDestXLeft,
       topLeftDestYTop,
-      width,
-      height,
+      videoElement.width,
+      videoElement.height,
     );
 
     /* 
@@ -398,15 +389,13 @@ class _QRoloState extends State<QRolo> {
   /// and convert canvas (with context drawn) ito dataURI dataUrl
   html.CanvasElement createPredrawnCanvasFrameContextFromVideoElement({
     required html.VideoElement videoElement,
-    required int width,
-    required int height,
     int topLeftDestXLeft = 0,
     int topLeftDestYTop = 0,
   }) {
     // Creating a virtual canvas simply to draw + capture imageData?
     final html.CanvasElement sizedVideoCanvas = html.CanvasElement(
-      width: width,
-      height: height,
+      width: videoElement.width,
+      height: videoElement.height,
     );
     final html.CanvasRenderingContext2D context = sizedVideoCanvas.context2D;
 
