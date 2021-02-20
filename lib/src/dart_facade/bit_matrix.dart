@@ -23,5 +23,6 @@ class BitMatrix {
   // If this was a first-party lib we would be able to decide named bool.
   // ignore: avoid_positional_boolean_parameters
   external void set(num x, num y, bool v);
+  // ignore: avoid_positional_boolean_parameters
   external void setRegion(num left, num top, num width, num height, bool v);
 }
