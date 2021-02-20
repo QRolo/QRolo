@@ -1,5 +1,5 @@
 @JS()
-library decoder.reedsolomon.GenericGF;
+library decoder.reedsolomon.generic_gf;
 
 import 'dart:js';
 
@@ -11,6 +11,8 @@ external num addOrSubtractGF(num a, num b);
 
 @JS()
 class GenericGF {
+  external factory GenericGF(num primitive, num size, num genBase);
+
   // @Ignore
   GenericGF.fakeConstructor$();
   external num get primitive;
@@ -32,7 +34,6 @@ class GenericGF {
   external JsArray<double> get logTable;
   external set logTable(JsArray<double> v);
 
-  external factory GenericGF(num primitive, num size, num genBase);
   external num multiply(num a, num b);
   external num inverse(num a);
   external GenericGFPoly buildMonomial(num degree, num coefficient);
