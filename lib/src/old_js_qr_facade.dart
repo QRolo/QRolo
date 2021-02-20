@@ -1,5 +1,5 @@
 @JS()
-library jsqr;
+library old_jsqr;
 
 import 'dart:typed_data';
 
