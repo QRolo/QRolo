@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:html' as html
     show DivElement, DomError, DomException, MediaStream, VideoElement, window;
 import 'dart:js_util' show promiseToFuture;
-// import 'dart:_js_helper';
 
 // https://github.com/flutter/flutter/issues/41563
 // Alternative use universal_ui wrapper
@@ -14,7 +13,6 @@ import 'dart:ui' as ui
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
-import 'package:js/js.dart' show JS;
 import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart'
     show isCameraAvailableInMediaDevices;
 import 'package:qrolo/src/jsqr.dart';
