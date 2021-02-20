@@ -10,7 +10,7 @@ class BitMatrix {
   external factory BitMatrix(Uint8ClampedList data, num width);
 
   // @Ignore
-  BitMatrix.fakeConstructor$();
+  external BitMatrix.fakeConstructor$();
 
   external static BitMatrix createEmpty(
     num width,

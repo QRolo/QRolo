@@ -74,7 +74,9 @@ abstract class ECIChunk extends BaseChunk {
 }
 
 /*export declare type Chunks = Array<Chunk | ByteChunk | ECIChunk>;*/
-// Custom
+/// Custom
+@anonymous
+@JS()
 abstract class BaseChunk {
   external String /* Mode */ get type;
   external set type(String /* Mode */ v);
