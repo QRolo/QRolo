@@ -171,6 +171,13 @@ class _QRoloState extends State<QRolo> {
     // Otherwise technically the _cameraStream could be nulled right before use
     _cameraStream = videoStream;
 
+    // 1. a. Present the stream
+    final dynamic? playResult = await startPlayingStream(
+      videoStream,
+      videoElement,
+    );
+    print(playResult);
+
     // 2. Capture frame from the currently running stream
     // Current stream reference should be available
     // Periodically obtain rather than making a call each time
@@ -195,6 +202,8 @@ class _QRoloState extends State<QRolo> {
     return;
   }
 
+  /// Try to get the stream
+  ///
   /// Assume async platform call will not race against the scan interval
   /// Configure getUserMedia video stream
   /// add stream source to our video element with config
@@ -269,7 +278,53 @@ class _QRoloState extends State<QRolo> {
     }
   }
 
+  ///
+  /// Show the captured stream to the user on the page video element src
+  /// Test using https://media-play-promise.glitch.me/
+  /// https://webrtc.github.io/samples/src/video/chrome.mp4
+  /// videoElementToUpdateDirectly.setAttribute(
+  ///   'src',
+  ///   'https://webrtc.github.io/samples/src/video/chrome.mp4',
+  /// );
+  ///
+  /// Error: NotAllowedError: play() failed because the user didn't interact with the document first.
+  /// https://goo.gl/xX8pDD
+  Future<dynamic?> startPlayingStream(
+    html.MediaStream videoStream,
+    html.VideoElement videoElementToUpdateDirectly,
+  ) async {
+    // Mutate
+    // Present the media stream on the HTMLVideoElement
+    videoElementToUpdateDirectly.srcObject = videoStream;
+
+    // Explicit inline the video within widget.
+    // iOS Safari would expand fullscreen automatically once playback begins.
+    // Check iOS versions
+    // https://webkit.org/blog/6784/new-video-policies-for-ios/
+    videoElementToUpdateDirectly.setAttribute('playsinline', 'true');
+
+    // Possible returns
+    // NotAllowedError (user agent, OS)
+    // NotSupportedError (an unsupported MediaStream source blob file format)
+    // Automatic vs user press.
+    //
+    // Could be JS undefined?
+    // Example
+    // Error: NotAllowedError: play() failed because the user didn't interact with the document first.
+    // https://goo.gl/xX8pDD
+    final dynamic? playResult = await videoElementToUpdateDirectly.play();
+
+    return playResult;
+  }
+
+  ///
+  /// Get the image data or matrix from our streaming video element
+  ///
+  /// ? Warning: Unsure if canvas video div element may have been potentially
+  /// mutated by devor dynamic user responsive UI
   Uint8ClampedList? captureFrameFromStream(html.MediaStream videoStream) {
+    // Creating a virtual canvas simply to capture imageData?
+
     return null;
   }
 
