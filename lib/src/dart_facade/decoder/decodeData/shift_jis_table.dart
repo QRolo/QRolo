@@ -1,5 +1,5 @@
 @JS()
-library decoder.decodeData.shift_jis_table;
+library decoder.decode_data.shift_jis_table;
 
 import 'package:js/js.dart';
 
