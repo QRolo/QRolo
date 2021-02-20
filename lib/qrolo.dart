@@ -33,6 +33,8 @@ import 'package:qrolo/src/media.dart';
 const int defaultScanIntervalMilliseconds = 500;
 
 /// The QRolo scanner widget
+/// !IMPORTANT: This widget needs to be bound in a sized box or other container
+/// Other Flutter throws unbound render flex hit test errors
 class QRolo extends StatefulWidget {
   /// clickToCapture to show a button to capture a Data URL for the image
   final bool clickToCapture;
