@@ -9,7 +9,6 @@ import 'dart:html' as html
         MediaStream,
         VideoElement,
         window;
-import 'dart:js_util';
 import 'dart:typed_data';
 // dart:ui is valid use import platformViewRegistry
 // https://github.com/flutter/flutter/issues/41563
@@ -25,8 +24,6 @@ import 'package:flutter/services.dart' show MethodChannel;
 import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart'
     show isCameraAvailableInMediaDevices;
 import 'package:qrolo/src/jsqr.dart' show jsQR;
-
-import 'package:js/js.dart' show JS, anonymous;
 
 const int defaultScanIntervalMilliseconds = 500;
 
@@ -64,7 +61,7 @@ class QRolo extends StatefulWidget {
   /// need a global for the registerViewFactory
   /// when initialising state initState
   /// ui.platformViewRegistry.registerViewFactory
-  static html.DivElement videoDiv = html.DivElement();
+  static final html.DivElement videoDiv = html.DivElement();
 
   static Future<bool> isCameraAvailable() async =>
       isCameraAvailableInMediaDevices();
@@ -179,37 +176,23 @@ class _QRoloState extends State<QRolo> {
       videoStream,
       videoElement,
     );
-
-    var constraints = UserMediaOptions(
-        // audio: false,
-        video: VideoOptions(facingMode: "user"));
-    // dart style, not working properly:
-    // var stream =
-    //     await html.window.navigator.mediaDevices.getUserMedia(constraints);
-    // straight JS:
-    html.MediaStream stream = await promiseToFuture(getUserMedia(constraints));
-    this._cameraStream = stream;
-    videoElement.srcObject = _cameraStream;
-    videoElement.setAttribute("playsinline",
-        'true'); // required to tell iOS safari we don't want fullscreen
-    final dynamic playTest = await videoElement.play();
     debugPrint(playResult?.toString());
 
-    // // 2. Capture frame from the currently running stream
-    // // Current stream reference should be available
-    // // Periodically obtain rather than making a call each time
-    // // Performance
-    // // FP
-    // // Assuming width and height data are flutter virtual int pixel size
-    // // Otherwise it will mess up qr code data matrix
+    // 2. Capture frame from the currently running stream
+    // Current stream reference should be available
+    // Periodically obtain rather than making a call each time
+    // Performance
+    // FP
+    // Assuming width and height data are flutter virtual int pixel size
+    // Otherwise it will mess up qr code data matrix
 
-    // // Use the same video height and width
-    // // on virtual canvas and the matrix jsQR check
-    // // ASssuming videoElement set up well. No edge null cases
-    // final int width = videoElement.videoWidth;
-    // final int height = videoElement.videoHeight;
+    // Use the same video height and width
+    // on virtual canvas and the matrix jsQR check
+    // ASssuming videoElement set up well. No edge null cases
+    final int width = videoElement.videoWidth;
+    final int height = videoElement.videoHeight;
 
-    // final html.ImageData imageData = captureFrameFromStream(videoElement);
+    final html.ImageData imageData = captureFrameFromStream(videoElement);
 
     /* 
     if (imageData == null) {
@@ -217,19 +200,19 @@ class _QRoloState extends State<QRolo> {
     }
     */
 
-    // // 3. Compare frame (calculate QR algo) and get code back
-    // final String? qrCode = getQRCodeFromImageDataFrame(
-    //   imageData,
-    //   width,
-    //   height,
-    // );
+    // 3. Compare frame (calculate QR algo) and get code back
+    final String? qrCode = getQRCodeFromImageDataFrame(
+      imageData,
+      width,
+      height,
+    );
 
-    // if (qrCode == null) {
-    //   // No QR code from this specific frame
+    if (qrCode == null) {
+      // No QR code from this specific frame
 
-    // }
+    }
 
-    // return qrCode;
+    return qrCode;
 
     // Catch DOMException
     // drawImage()
@@ -254,8 +237,6 @@ class _QRoloState extends State<QRolo> {
   /// Then finally trigger the HTMLVideoelement.play HTMLMediaElement play()
   /// Returns rejected promise if playback cannot be started
   Future<html.MediaStream?> callPlatformOpenMediaVideoStream() async {
-    if (!mounted) return null;
-
     try {
       /*
       final Map<String, Object> exampleVideoConstraintsOptions = {
@@ -336,20 +317,17 @@ class _QRoloState extends State<QRolo> {
   /// https://goo.gl/xX8pDD
   Future<dynamic?> startPlayingStream(
     html.MediaStream videoStream,
-    html.VideoElement videoElementToUpdateDirectlyz,
+    html.VideoElement videoElementToUpdateDirectly,
   ) async {
-    if (!mounted) return;
-
     // Mutate
     // Present the media stream on the HTMLVideoElement
-
-    this.videoElement.srcObject = videoStream;
+    videoElementToUpdateDirectly.srcObject = videoStream;
 
     // Explicit inline the video within widget.
     // iOS Safari would expand fullscreen automatically once playback begins.
     // Check iOS versions
     // https://webkit.org/blog/6784/new-video-policies-for-ios/
-    this.videoElement.setAttribute('playsinline', 'true');
+    videoElementToUpdateDirectly.setAttribute('playsinline', 'true');
 
     // Possible returns
     // NotAllowedError (user agent, OS)
@@ -360,7 +338,7 @@ class _QRoloState extends State<QRolo> {
     // Example
     // Error: NotAllowedError: play() failed because the user didn't interact with the document first.
     // https://goo.gl/xX8pDD
-    final dynamic? playResult = await videoElement.play();
+    final dynamic? playResult = await videoElementToUpdateDirectly.play();
 
     return playResult;
   }
@@ -521,32 +499,4 @@ class _QRoloState extends State<QRolo> {
       _errorMessage = message;
     });
   }
-}
-
-@JS("getUserMedia")
-external Future<dynamic> getUserMedia(UserMediaOptions constraints);
-
-@JS()
-@anonymous
-class UserMediaOptions {
-  external VideoOptions get video;
-
-  external factory UserMediaOptions({VideoOptions video});
-}
-
-@JS()
-@anonymous
-class VideoOptions {
-  external String get facingMode;
-  // external DeviceIdOptions get deviceId;
-
-  external factory VideoOptions({String facingMode, DeviceIdOptions deviceId});
-}
-
-@JS()
-@anonymous
-class DeviceIdOptions {
-  external String get exact;
-
-  external factory DeviceIdOptions({String exact});
 }
