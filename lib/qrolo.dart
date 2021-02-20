@@ -348,6 +348,10 @@ class _QRoloState extends State<QRolo> {
   }
 
   /// Draw a virtual canvas to get the image data back..
+  /// videoElement `HTMLVideoElement` can be used as a `CanvasImageSource`
+  /// Use frames being presented by a <video> element
+  /// even if not visible
+
   /// Surely there is a quicker version?
   ///
   /// Get the image data or matrix from our streaming video element
@@ -373,6 +377,9 @@ class _QRoloState extends State<QRolo> {
     const int topLeftDestXLeft = 0;
     const int topLeftDestYTop = 0;
 
+    // `HTMLVideoElement` can be used as a `CanvasImageSource`
+    // Use frames being presented by a <video> element
+    // even if not visible
     context.drawImage(
       videoElement,
       topLeftDestXLeft,
