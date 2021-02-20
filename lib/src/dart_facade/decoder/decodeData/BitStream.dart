@@ -1,19 +1,27 @@
 @JS()
-library decoder.decodeData.BitStream;
+library decoder.decode_data.bit_stream;
 
-import 'package:js/js.dart';
+import 'dart:typed_data' show Uint8ClampedList;
+
+import 'package:js/js.dart' show JS;
 
 @JS()
 class BitStream {
   // @Ignore
   BitStream.fakeConstructor$();
-  external get bytes;
-  external set bytes(v);
-  external get byteOffset;
-  external set byteOffset(v);
-  external get bitOffset;
-  external set bitOffset(v);
-  external factory BitStream(Uint8ClampedArray bytes);
+
+  external int get bytes;
+  external set bytes(int v);
+
+  /// Wow these were private fields with an any type
+  /// Guess they did not think it was important for private fields
+  /// Even though the js source seems to learly use this as int
+  /// e.g. 0 offset or 8 bit offset balance between byte offset
+  external int get byteOffset;
+  external set byteOffset(int v);
+  external int get bitOffset;
+  external set bitOffset(int v);
+  external factory BitStream(Uint8ClampedList bytes);
   external num readBits(num numBits);
   external num available();
 }
