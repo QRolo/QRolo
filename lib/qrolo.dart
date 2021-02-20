@@ -367,7 +367,7 @@ class _QRoloState extends State<QRolo> {
   ) {
     // Creating a virtual canvas simply to capture imageData?
     final html.CanvasElement sizedDrawnCanvasContextualisedFrame =
-        createDrawnCanvasFrameContext(
+        createPredrawnCanvasFrameContextFromVideoElement(
       videoElement: videoElement,
       width: width,
       height: height,
@@ -396,7 +396,7 @@ class _QRoloState extends State<QRolo> {
   /// Utility function
   /// To reuse for both capture frame image data
   /// and convert canvas (with context drawn) ito dataURI dataUrl
-  html.CanvasElement createDrawnCanvasFrameContext({
+  html.CanvasElement createPredrawnCanvasFrameContextFromVideoElement({
     required html.VideoElement videoElement,
     required int width,
     required int height,
