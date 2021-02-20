@@ -1,25 +1,33 @@
 @JS()
-library decoder.reedsolomon.GenericGFPoly;
+library decoder.reedsolomon.generic_gf_poly;
+
+import 'dart:js';
+import 'dart:typed_data';
 
 import 'package:js/js.dart';
 import 'GenericGF.dart' show GenericGF;
 
 @JS()
 class GenericGFPoly {
+  external factory GenericGFPoly(
+    GenericGF field,
+    Uint8ClampedList coefficients,
+  );
   // @Ignore
   GenericGFPoly.fakeConstructor$();
-  external get field;
-  external set field(v);
-  external get coefficients;
-  external set coefficients(v);
-  external factory GenericGFPoly(
-      GenericGF field, Uint8ClampedArray coefficients);
-  external num degree();
+  external dynamic get field;
+  external set field(dynamic v);
+
+  // external JsArray<dynamic> get coefficients; UInt8ClampedArray for zero one
+  external JsArray<double> get coefficients;
+  external set coefficients(JsArray<double> v);
+
+  external double degree();
   external bool isZero();
-  external num getCoefficient(num degree);
+  external double getCoefficient(double degree);
   external GenericGFPoly addOrSubtract(GenericGFPoly other);
-  external GenericGFPoly multiply(num scalar);
+  external GenericGFPoly multiply(double scalar);
   external GenericGFPoly multiplyPoly(GenericGFPoly other);
-  external GenericGFPoly multiplyByMonomial(num degree, num coefficient);
-  external num evaluateAt(num a);
+  external GenericGFPoly multiplyByMonomial(double degree, double coefficient);
+  external double evaluateAt(double a);
 }
