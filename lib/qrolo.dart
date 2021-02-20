@@ -192,14 +192,20 @@ class _QRoloState extends State<QRolo> {
     final int width = videoElement.videoWidth;
     final int height = videoElement.videoHeight;
 
-    final imageData = captureFrameFromStream(videoStream);
+    final html.ImageData imageData = captureFrameFromStream(
+      videoElement,
+      width,
+      height,
+    );
 
+    /* 
     if (imageData == null) {
       return;
     }
+    */
 
     // 3. Compare frame (calculate QR algo) and get code back
-    final String? qrCode = getQRCodeFromData(
+    final String? qrCode = getQRCodeFromImageDataFrame(
       imageData,
       width,
       height,
@@ -211,6 +217,17 @@ class _QRoloState extends State<QRolo> {
     }
 
     return;
+
+    // Catch DOMException
+    // drawImage()
+    //  INDEX_SIZE
+    //  INVALID_STATE
+    //  TYPE_MISMATCH
+    //  NAMESPACE ?? NS_ERROR_NOT_AVAILABLE image not loaded.. .complete .onload
+    //
+    // imageData
+    // INDEX_SIZE
+    // SECURITY
   }
 
   /// Try to get the stream
@@ -330,15 +347,50 @@ class _QRoloState extends State<QRolo> {
     return playResult;
   }
 
+  /// Draw a virtual canvas to get the image data back..
+  /// Surely there is a quicker version?
   ///
   /// Get the image data or matrix from our streaming video element
   ///
+  /// Important: width and heigth should match across video, image, jsqr data
+  ///
   /// ? Warning: Unsure if canvas video div element may have been potentially
   /// mutated by devor dynamic user responsive UI
-  Uint8ClampedList? captureFrameFromStream(html.MediaStream videoStream) {
+  html.ImageData captureFrameFromStream(
+    html.VideoElement videoElement,
+    int width,
+    int height,
+  ) {
     // Creating a virtual canvas simply to capture imageData?
+    final html.CanvasElement sizedVideoCanvas = html.CanvasElement(
+      width: width,
+      height: height,
+    );
+    final html.CanvasRenderingContext2D context = sizedVideoCanvas.context2D;
 
-    return null;
+    // Seems superfluous to do this just to get imageData
+    // Though lots of canvas utility
+    const int topLeftDestXLeft = 0;
+    const int topLeftDestYTop = 0;
+
+    context.drawImage(
+      videoElement,
+      topLeftDestXLeft,
+      topLeftDestYTop,
+    );
+
+    html.ImageData imageData = context.getImageData(
+      topLeftDestXLeft,
+      topLeftDestYTop,
+      width,
+      height,
+    );
+
+    /* 
+      IndexSizeError
+      SecurityError
+     */
+    return imageData;
   }
 
   ///
