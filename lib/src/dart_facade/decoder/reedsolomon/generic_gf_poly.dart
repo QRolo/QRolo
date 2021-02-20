@@ -5,7 +5,7 @@ import 'dart:js';
 import 'dart:typed_data';
 
 import 'package:js/js.dart';
-import 'GenericGF.dart' show GenericGF;
+import 'generic_gf.dart' show GenericGF;
 
 @JS()
 class GenericGFPoly {

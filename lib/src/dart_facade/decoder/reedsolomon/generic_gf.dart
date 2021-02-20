@@ -2,7 +2,7 @@
 library decoder.reedsolomon.GenericGF;
 
 import 'package:js/js.dart';
-import 'GenericGFPoly.dart' show GenericGFPoly;
+import 'generic_gf_poly.dart' show GenericGFPoly;
 
 @JS()
 external num addOrSubtractGF(num a, num b);
