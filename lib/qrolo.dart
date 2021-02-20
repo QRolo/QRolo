@@ -191,30 +191,38 @@ class _QRoloState extends State<QRolo> {
         'facingMode': 'environment',
       };
 
-      await promiseToFuture<html.MediaStream>(
-        html.window.navigator.getUserMedia(
-          video: videoConstraints,
-        ),
-      );
+      final html.MediaStream? mediaStream =
+          // ignore: unnecessary_cast
+          await html.window.navigator.getUserMedia(
+        video: videoConstraints,
+      ) as html.MediaStream?;
 
       return null;
     } on html.DomException catch (domException, stackTrace) {
       // Code actually breaks out exception rather than returning null
 
-      debugPrint(
-        'DomException ${domException.toString()}',
-      );
-      debugPrint(
-        stackTrace.toString(),
+      _updateErrorMessage(
+        'DOM Exception ${domException.toString()} ${stackTrace.toString()}',
       );
 
       return null;
     } on Exception catch (e, stackTrace) {
-      debugPrint(
-        'Unable to access camera stream getUserMedia(): ${e.toString} ${stackTrace.toString()}',
+      _updateErrorMessage(
+        'Unable to access camera stream getUserMedia(): Exception: ${e.toString()} ${stackTrace.toString()}',
       );
 
       return null;
     }
+  }
+
+  /// Reflect error message in widget state displayed text as well
+  /// Widget conditionally builds depending on error or loading message
+  void _updateErrorMessage(String message) {
+    debugPrint(
+      message,
+    );
+    setState(() {
+      _errorMessage = message;
+    });
   }
 }
