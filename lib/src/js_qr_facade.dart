@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:js/js.dart';
 import 'package:qrolo/src/dart_facade/decoder/decode_data.dart' show Chunks;
+import 'package:qrolo/src/location.dart';
 
 @anonymous
 @JS()
@@ -15,47 +16,13 @@ abstract class QRCode {
   external set data(String v);
   external Chunks get chunks;
   external set chunks(Chunks v);
-  external dynamic
-      /*{
-        topRightCorner: Point;
-        topLeftCorner: Point;
-        bottomRightCorner: Point;
-        bottomLeftCorner: Point;
-        topRightFinderPattern: Point;
-        topLeftFinderPattern: Point;
-        bottomLeftFinderPattern: Point;
-        bottomRightAlignmentPattern?: Point;
-    }*/
-      get location;
-  external set location(
-      dynamic
-          /*{
-        topRightCorner: Point;
-        topLeftCorner: Point;
-        bottomRightCorner: Point;
-        bottomLeftCorner: Point;
-        topRightFinderPattern: Point;
-        topLeftFinderPattern: Point;
-        bottomLeftFinderPattern: Point;
-        bottomRightAlignmentPattern?: Point;
-    }*/
-          v);
+  external Location get location;
+  external set location(Location v);
   external factory QRCode({
     List<num> binaryData,
     String data,
     Chunks chunks,
-    dynamic
-        /*{
-        topRightCorner: Point;
-        topLeftCorner: Point;
-        bottomRightCorner: Point;
-        bottomLeftCorner: Point;
-        topRightFinderPattern: Point;
-        topLeftFinderPattern: Point;
-        bottomLeftFinderPattern: Point;
-        bottomRightAlignmentPattern?: Point;
-    }*/
-        location,
+    Location location,
   });
 }
 
