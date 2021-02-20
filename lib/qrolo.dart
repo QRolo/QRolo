@@ -197,7 +197,24 @@ class _QRoloState extends State<QRolo> {
         video: videoConstraints,
       ) as html.MediaStream?;
 
-      return null;
+      if (mediaStream == null) {
+        // This should not occur
+        // Should catch DomException rather than return null
+
+        // // e.g. Error: NotFoundError: Requested device not found
+        // We do not receive the extra error info here
+        // Need to use custom JS interop to expose more error info.
+        // "NotFoundError: Requested device not found"
+        // Indicates error on getUserMedia()
+        const String message =
+            'No camera access found: Please check camera device/permission';
+
+        _updateErrorMessage(message);
+
+        return null;
+      }
+
+      return mediaStream;
     } on html.DomException catch (domException, stackTrace) {
       // Code actually breaks out exception rather than returning null
 
@@ -209,6 +226,14 @@ class _QRoloState extends State<QRolo> {
     } on Exception catch (e, stackTrace) {
       _updateErrorMessage(
         'Unable to access camera stream getUserMedia(): Exception: ${e.toString()} ${stackTrace.toString()}',
+      );
+
+      return null;
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e, stackTrace) {
+      // This should not occur
+      _updateErrorMessage(
+        'Unable to access camera stream errors: ${e.toString()} ${stackTrace.toString()}',
       );
 
       return null;
