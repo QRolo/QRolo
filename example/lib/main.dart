@@ -66,6 +66,9 @@ class _MyAppState extends State<MyApp> {
             Container(
               width: 640,
               height: 480,
+
+              /// !IMPORTANT: This widget needs to be bound in a sized box or other container
+              /// Other Flutter throws unbound render flex hit test errors
               child: QRolo(),
             ),
             SizedBox(height: 640, width: 480)
