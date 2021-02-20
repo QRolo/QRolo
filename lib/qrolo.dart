@@ -14,6 +14,8 @@ import 'package:flutter/services.dart' show MethodChannel;
 import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart'
     show isCameraAvailableInMediaDevices;
 
+const int DEFAULT_SCAN_INTERVAL_MILLISECONDS = 500;
+
 /// The QRolo scanner widget
 class QRolo extends StatefulWidget {
   @override
@@ -59,6 +61,7 @@ class _QRoloState extends State<QRolo> {
   String? _errorMessage;
   String viewFactoryDivViewID = 'qrolo-scanner-view';
   late html.VideoElement videoElement;
+  // Make hook to exit on first scan found and stop loops.
 
   @override
   Widget build(BuildContext context) {
@@ -110,5 +113,33 @@ class _QRoloState extends State<QRolo> {
       viewFactoryDivViewID,
       (int id) => QRolo.videoDiv,
     );
+
+    startContinuousScanningLoop();
+  }
+
+  /// Methods should not be exposed
+  /// Maybe wrap this into the _web-only implementation as well
+  void startContinuousScanningLoop({
+    int scanIntervalMs = DEFAULT_SCAN_INTERVAL_MILLISECONDS,
+  }) {
+    Timer(
+      Duration(
+        milliseconds: scanIntervalMs,
+      ),
+      () {
+        scanStream();
+      },
+    );
+  }
+
+  Future<void> scanStream() async {
+    await callPlatformMediaVideoStream();
+
+    return;
+  }
+
+  /// Assume async platform call will not race against the scan interval
+  Future<void> callPlatformMediaVideoStream() async {
+    return;
   }
 }
