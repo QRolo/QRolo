@@ -1,9 +1,18 @@
 import 'dart:async';
-import 'dart:html' as html show DivElement, MediaStream;
+import 'dart:html' as html show DivElement, MediaStream, VideoElement;
+
+// https://github.com/flutter/flutter/issues/41563
+// Alternative use universal_ui wrapper
+// ignore: unused_import
+import 'dart:ui' as ui
+    show
+        // ignore: undefined_shown_name
+        platformViewRegistry;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart';
+import 'package:flutter/services.dart' show MethodChannel;
+import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart'
+    show isCameraAvailableInMediaDevices;
 
 /// The QRolo scanner widget
 class QRolo extends StatefulWidget {
@@ -39,7 +48,7 @@ class QRolo extends StatefulWidget {
   /// need a global for the registerViewFactory
   /// when initialising state initState
   /// ui.platformViewRegistry.registerViewFactory
-  static html.DivElement videoDiv = html.DivElement();
+  static final html.DivElement videoDiv = html.DivElement();
 
   static Future<bool> isCameraAvailable() async =>
       isCameraAvailableInMediaDevices();
@@ -49,6 +58,7 @@ class _QRoloState extends State<QRolo> {
   html.MediaStream? _cameraStream;
   String? _errorMessage;
   String viewFactoryDivViewID = 'qrolo-scanner-view';
+  late html.VideoElement videoElement;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +91,24 @@ class _QRoloState extends State<QRolo> {
           ),
         ),
       ],
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('QRolo scanner init');
+
+    // Create new VideoElement and add to view factory div
+    videoElement = html.VideoElement();
+    QRolo.videoDiv.children = [videoElement];
+
+    // This is valid usage on build
+    // Dev analyzer has not been updated to accept this yet.
+    // ignore: undefined_prefixed_name
+    ui.platformViewRegistry.registerViewFactory(
+      viewFactoryDivViewID,
+      (int id) => QRolo.videoDiv,
     );
   }
 }
