@@ -186,6 +186,12 @@ class _QRoloState extends State<QRolo> {
     // Assuming width and height data are flutter virtual int pixel size
     // Otherwise it will mess up qr code data matrix
 
+    // Use the same video height and width
+    // on virtual canvas and the matrix jsQR check
+    // ASssuming videoElement set up well. No edge null cases
+    final int width = videoElement.videoWidth;
+    final int height = videoElement.videoHeight;
+
     final imageData = captureFrameFromStream(videoStream);
 
     if (imageData == null) {
@@ -193,11 +199,16 @@ class _QRoloState extends State<QRolo> {
     }
 
     // 3. Compare frame (calculate QR algo) and get code back
-    getQRCodeFromData(
+    final String? qrCode = getQRCodeFromData(
       imageData,
-      0,
-      0,
+      width,
+      height,
     );
+
+    if (qrCode == null) {
+      // No QR code from this specific frame
+
+    }
 
     return;
   }
