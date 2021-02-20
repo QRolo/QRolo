@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:html' as html
-    show DivElement, DomException, MediaStream, VideoElement, window;
+    show DivElement, DomException, ImageData, MediaStream, VideoElement, window;
+import 'dart:typed_data';
 // dart:ui is valid use import platformViewRegistry
 // https://github.com/flutter/flutter/issues/41563
 // Alternative use universal_ui wrapper
@@ -150,19 +151,36 @@ class _QRoloState extends State<QRolo> {
 
   Future<void> scanStream() async {
     // 1. Start camera stream and get back
-    _cameraStream = await callPlatformOpenMediaVideoStream();
+    final videoStream = await callPlatformOpenMediaVideoStream();
 
-    if (_cameraStream == null) {
+    if (videoStream == null) {
       //
       debugPrint('Error accessing camera stream getUserMedia()');
+
+      return;
     }
+    // Not assigned directly to allow local context null discrimination check
+    // Otherwise technically the _cameraStream could be nulled right before use
+    _cameraStream = videoStream;
+
     // 2. Capture frame from the currently running stream
     // Current stream reference should be available
     // Periodically obtain rather than making a call each time
     // Performance
     // FP
 
-    // 3. Compare frame and get code back
+    final imageData = captureFrameFromStream(videoStream);
+
+    if (imageData == null) {
+      return;
+    }
+
+    // 3. Compare frame (calculate QR algo) and get code back
+    getQRCodeFromData(
+      imageData,
+      0,
+      0,
+    );
 
     return;
   }
@@ -239,6 +257,35 @@ class _QRoloState extends State<QRolo> {
 
       return null;
     }
+  }
+
+  Uint8ClampedList? captureFrameFromStream(html.MediaStream videoStream) {
+    return null;
+  }
+
+  ///
+  /// Assumedly straight 0-255 1D array that is
+  /// transformed into calculation matrix based on width and height
+  String? getQRCodeFromData(
+    Uint8ClampedList data,
+    int width,
+    int height,
+  ) {
+    // Use jsQR
+
+    return null;
+  }
+
+  String? getQRCodeFromImageDataFrame(
+    html.ImageData image,
+    int width,
+    int height,
+  ) {
+    return getQRCodeFromData(
+      image.data,
+      width,
+      height,
+    );
   }
 
   /// Reflect error message in widget state displayed text as well
