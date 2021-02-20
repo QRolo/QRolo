@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:html' as html show DivElement, window, MediaDeviceInfo;
+import 'dart:html' as html show DivElement;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class QRolo extends StatefulWidget {
@@ -18,7 +19,12 @@ class QRolo extends StatefulWidget {
   }
 
   /// Whether to show the camera button overlaid on scanner video stream view
+  /// Maybe this should be split into two separate widgets for fulfilling
+  /// Two distinct purposes
   ///
+  /// clean code distinct paths
+  ///
+  /// Or root-level bool toggle with discrete discriminated widget builder fns
   final bool isClickToCaptureEnabled;
 
   const QRolo({
@@ -35,21 +41,8 @@ class QRolo extends StatefulWidget {
   /// ui.platformViewRegistry.registerViewFactory
   static html.DivElement videoDiv = html.DivElement();
 
-  static Future<bool> isCameraAvailable() async {
-    final List<html.MediaDeviceInfo> mediaDeviceInfos =
-        await html.window.navigator.mediaDevices!.enumerateDevices()
-            as List<html.MediaDeviceInfo>;
-
-    debugPrint(
-      'sources: ${mediaDeviceInfos.toString()}',
-    );
-
-    final bool isVideoInputFound = mediaDeviceInfos.any(
-      (mediaDeviceInfo) => mediaDeviceInfo.kind == 'videoinput',
-    );
-
-    return isVideoInputFound;
-  }
+  static Future<bool> isCameraAvailable() async =>
+      isCameraAvailableInMediaDevices();
 }
 
 class _QRoloState extends State<QRolo> {
