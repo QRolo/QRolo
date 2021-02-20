@@ -22,6 +22,6 @@ class BitStream {
   external int get bitOffset;
   external set bitOffset(int v);
   external factory BitStream(Uint8ClampedList bytes);
-  external num readBits(num numBits);
-  external num available();
+  external int readBits(int numBits);
+  external int available();
 }
