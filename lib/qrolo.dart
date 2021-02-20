@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
 import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart'
     show isCameraAvailableInMediaDevices;
+import 'package:qrolo/src/jsqr.dart';
 
 const int DEFAULT_SCAN_INTERVAL_MILLISECONDS = 500;
 
@@ -122,6 +123,9 @@ class _QRoloState extends State<QRolo> {
   void startContinuousScanningLoop({
     int scanIntervalMs = DEFAULT_SCAN_INTERVAL_MILLISECONDS,
   }) {
+    // - FIXME: Do not need to re-call once the reference is available
+    // Parts of the nested code flow should only be called once then...
+
     Timer(
       Duration(
         milliseconds: scanIntervalMs,
@@ -133,13 +137,29 @@ class _QRoloState extends State<QRolo> {
   }
 
   Future<void> scanStream() async {
-    await callPlatformMediaVideoStream();
+    // 1. Start camera stream
+    await callPlatformOpenMediaVideoStream();
+
+    // 2. Capture frame from the currently running stream
+    // Current stream reference should be available
+    // Periodically obtain rather than making a call each time
+    // Performance
+    // FP
+
+    // 3. Compare frame and get code back
 
     return;
   }
 
   /// Assume async platform call will not race against the scan interval
-  Future<void> callPlatformMediaVideoStream() async {
-    return;
+  /// Configure getUserMedia video stream
+  /// add stream source to our video element with config
+  ///  - playsinline
+  ///  - 'true' non fullscreen
+  ///
+  /// Then finally trigger the HTMLVideoelement.play HTMLMediaElement play()
+  /// Returns rejected promise if playback cannot be started
+  Future<html.MediaStream?> callPlatformOpenMediaVideoStream() async {
+    return null;
   }
 }
