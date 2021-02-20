@@ -15,8 +15,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  String? scannedQRCode;
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -56,56 +54,10 @@ class _MyAppState extends State<MyApp> {
             Center(
               child: Text('Running on: $_platformVersion\n'),
             ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              child: Text("Scan QR Code"),
-              onPressed: () {
-                _openScan(context);
-              },
-            ),
-            Container(
-              width: 640,
-              height: 480,
-              child: QRolo(),
-            ),
-            SizedBox(height: 640, width: 480)
+            QRolo()
           ],
         ),
       ),
     );
-  }
-
-  void _openScan(BuildContext context) async {
-    final code = await showDialog(
-      context: navigatorKey.currentState!.overlay!.context,
-      builder: (BuildContext context) {
-        // var height = MediaQuery.of(context).size.height;
-        // var width = MediaQuery.of(context).size.width;
-        return AlertDialog(
-          insetPadding: EdgeInsets.all(5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
-            ),
-          ),
-          title: const Text('Scan QR Code'),
-          content: Container(
-            width: 640,
-            height: 480,
-            child: QRolo(),
-          ),
-        );
-      },
-    );
-
-    print("CODE: $code");
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      this.scannedQRCode = code;
-    });
   }
 }
