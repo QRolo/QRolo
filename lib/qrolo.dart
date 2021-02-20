@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:html' as html show DivElement;
+import 'dart:html' as html show DivElement, MediaStream;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart';
 
-// ignore: avoid_classes_with_only_static_members
+/// The QRolo scanner widget
 class QRolo extends StatefulWidget {
   @override
   _QRoloState createState() => _QRoloState();
@@ -46,8 +46,22 @@ class QRolo extends StatefulWidget {
 }
 
 class _QRoloState extends State<QRolo> {
+  html.MediaStream? _cameraStream;
+  String? _errorMessage;
+
   @override
   Widget build(BuildContext context) {
+    if (_errorMessage != null) {
+      return Center(child: Text(_errorMessage!));
+    }
+    if (_cameraStream == null) {
+      // Quick in-place loading message
+      // Is it better design to expose hooks and let
+      // the calling developer supply their own loading widgets?
+
+      return const Text('Loading...');
+    }
+
     return Container();
   }
 }
