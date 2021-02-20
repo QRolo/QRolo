@@ -48,6 +48,7 @@ class QRolo extends StatefulWidget {
 class _QRoloState extends State<QRolo> {
   html.MediaStream? _cameraStream;
   String? _errorMessage;
+  String viewFactoryDivViewID = 'qrolo-scanner-view';
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +63,24 @@ class _QRoloState extends State<QRolo> {
       return const Text('Loading...');
     }
 
-    return Container();
+    return Column(
+      children: [
+        Expanded(
+          child: OrientationBuilder(
+            builder: (BuildContext context, Orientation orientation) {
+              return Center(
+                child: Container(
+                  margin: const EdgeInsets.all(0),
+                  decoration: const BoxDecoration(color: Colors.black54),
+                  child: HtmlElementView(
+                    viewType: viewFactoryDivViewID,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
