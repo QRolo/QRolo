@@ -28,6 +28,19 @@ abstract class QRCode {
   });
 }
 
+/// Default for JS?
+const inversionAttemptBoth = 'attemptBoth';
+
+/// Note 50% performance hit apparently to compare again with invert black/white
+/// Default for Dart?
+const inversionAttemptDontInvert = 'dontInvert';
+
+/// Only invert.
+const inversionAttemptOnlyInvert = 'onlyInvert';
+
+/// Invert first??
+const inversionAttemptInvertFirst = 'invertFirst';
+
 @anonymous
 @JS()
 abstract class Options {
