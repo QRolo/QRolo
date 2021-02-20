@@ -51,4 +51,5 @@ abstract class Version {
 }
 
 @JS()
+// ignore: non_constant_identifier_names
 external List<Version> get VERSIONS;
