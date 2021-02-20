@@ -218,6 +218,8 @@ class _QRoloState extends State<QRolo> {
       // Code actually breaks out exception rather than returning null
 
       _updateErrorMessage(
+        'Unable to access camera stream \n'
+        'Please check camera devices/permissions \n'
         'DOM Exception ${domException.toString()} ${stackTrace.toString()}',
       );
 
