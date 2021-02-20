@@ -411,6 +411,49 @@ class _QRoloState extends State<QRolo> {
     return sizedVideoCanvas;
   }
 
+  /// API utility for quick saving with the current video
+  /// Blob is faster than dataUrl though
+  ///
+  /// imageDataUrlType
+  ///   - 'image/jpeg'
+  ///   - 'image/png'
+  ///   - 'image/webp'
+  ///
+  /// @returns DOMString
+  String getImageBase64DataUrlFromVideo({
+    required html.VideoElement videoElement,
+    String imageDataUrlType = 'image/jpeg',
+    double qualityDecimalFraction = 0.90,
+    int topLeftDestXLeft = 0,
+    int topLeftDestYTop = 0,
+  }) {
+    final html.CanvasElement frameCanvas =
+        createPredrawnCanvasFrameContextFromVideoElement(
+      videoElement: videoElement,
+    );
+
+    return frameCanvas.toDataUrl(
+      imageDataUrlType,
+      qualityDecimalFraction,
+    );
+  }
+
+  /// Single function call
+  /// minimal additional value other than sensible defaults
+  String getImageBase64DataUrlFromCanvas({
+    required html.CanvasElement predrawnVideoFrameCanvas,
+    String imageDataUrlType = 'image/jpeg',
+    double qualityDecimalFraction = 0.90,
+    int topLeftDestXLeft = 0,
+    int topLeftDestYTop = 0,
+  }) {
+    /// `canvas.toDataUrl("image/jpeg", 0.90);`
+    return predrawnVideoFrameCanvas.toDataUrl(
+      imageDataUrlType,
+      qualityDecimalFraction,
+    );
+  }
+
   ///
   /// Assumedly straight 0-255 1D array that is transformed into
   /// calculation matrix based on width and height
