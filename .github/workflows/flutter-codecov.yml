@@ -19,7 +19,7 @@ jobs:
     - name: Install plugin package dependencies
       run: flutter pub get
     - name: Test plugin (web)
-      run: flutter test --platform chrome
+      run: flutter test --platform chrome --coverage
 
     # Do not run builds multi repo. codecov requires additional config
     # - name: Build web example project
