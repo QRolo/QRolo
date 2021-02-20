@@ -176,7 +176,7 @@ class _QRoloState extends State<QRolo> {
       videoStream,
       videoElement,
     );
-    print(playResult);
+    debugPrint(playResult?.toString());
 
     // 2. Capture frame from the currently running stream
     // Current stream reference should be available
@@ -242,8 +242,8 @@ class _QRoloState extends State<QRolo> {
         // Need to use custom JS interop to expose more error info.
         // "NotFoundError: Requested device not found"
         // Indicates error on getUserMedia()
-        const String message =
-            'No camera access found: Please check camera device/permission';
+        const String message = 'No camera access found: '
+            'Please check camera device/permission';
 
         _updateErrorMessage(message);
 
@@ -263,7 +263,8 @@ class _QRoloState extends State<QRolo> {
       return null;
     } on Exception catch (e, stackTrace) {
       _updateErrorMessage(
-        'Unable to access camera stream getUserMedia(): Exception: ${e.toString()} ${stackTrace.toString()}',
+        'Unable to access camera stream getUserMedia(): '
+        'Exception: ${e.toString()} ${stackTrace.toString()}',
       );
 
       return null;
@@ -271,7 +272,8 @@ class _QRoloState extends State<QRolo> {
     } catch (e, stackTrace) {
       // This should not occur
       _updateErrorMessage(
-        'Unable to access camera stream errors: ${e.toString()} ${stackTrace.toString()}',
+        'Unable to access camera stream errors: '
+        '${e.toString()} ${stackTrace.toString()}',
       );
 
       return null;
