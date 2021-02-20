@@ -7,6 +7,7 @@ import 'package:js/js.dart' show JS;
 
 @JS()
 class BitStream {
+  external factory BitStream(Uint8ClampedList bytes);
   // @Ignore
   BitStream.fakeConstructor$();
 
@@ -21,7 +22,6 @@ class BitStream {
   external set byteOffset(int v);
   external int get bitOffset;
   external set bitOffset(int v);
-  external factory BitStream(Uint8ClampedList bytes);
   external int readBits(int numBits);
   external int available();
 }
