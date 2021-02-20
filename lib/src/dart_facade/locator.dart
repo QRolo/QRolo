@@ -2,7 +2,7 @@
 library locator;
 
 import 'package:js/js.dart';
-import './BitMatrix.dart' show BitMatrix;
+import 'bit_matrix.dart' show BitMatrix;
 
 @anonymous
 @JS()
@@ -27,13 +27,16 @@ abstract class QRLocation {
   external set alignmentPattern(Point v);
   external num get dimension;
   external set dimension(num v);
-  external factory QRLocation(
-      {Point topRight,
-      Point bottomLeft,
-      Point topLeft,
-      Point alignmentPattern,
-      num dimension});
+  external factory QRLocation({
+    Point topRight,
+    Point bottomLeft,
+    Point topLeft,
+    Point alignmentPattern,
+    num dimension,
+  });
 }
 
 @JS()
-external List<QRLocation> locate(BitMatrix matrix);
+external List<QRLocation> locate(
+  BitMatrix matrix,
+);

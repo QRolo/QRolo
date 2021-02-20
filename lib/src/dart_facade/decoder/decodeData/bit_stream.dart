@@ -7,7 +7,9 @@ import 'package:js/js.dart' show JS;
 
 @JS()
 class BitStream {
-  external factory BitStream(Uint8ClampedList bytes);
+  external factory BitStream(
+    Uint8ClampedList bytes,
+  );
   // @Ignore
   BitStream.fakeConstructor$();
 

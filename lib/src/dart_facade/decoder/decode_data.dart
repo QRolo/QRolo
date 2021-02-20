@@ -35,7 +35,10 @@ abstract class Chunk extends BaseChunk {
   external set type(String v);
   external String get text;
   external set text(String v);
-  external factory Chunk({Mode type, String text});
+  external factory Chunk({
+    Mode type,
+    String text,
+  });
 }
 
 ///
@@ -49,8 +52,10 @@ abstract class ByteChunk extends BaseChunk {
   external set type(dynamic /*Mode.Byte|Mode.Kanji*/ v);
   external List<num> get bytes;
   external set bytes(List<num> v);
-  external factory ByteChunk(
-      {dynamic /*Mode.Byte|Mode.Kanji*/ type, List<num> bytes});
+  external factory ByteChunk({
+    dynamic /*Mode.Byte|Mode.Kanji*/ type,
+    List<num> bytes,
+  });
 }
 
 @anonymous
@@ -62,7 +67,10 @@ abstract class ECIChunk extends BaseChunk {
   external set type(String /* "eci" */ v);
   external num get assignmentNumber;
   external set assignmentNumber(num v);
-  external factory ECIChunk({String /* Mode.ECI */ type, num assignmentNumber});
+  external factory ECIChunk({
+    String /* Mode.ECI */ type,
+    num assignmentNumber,
+  });
 }
 
 /*export declare type Chunks = Array<Chunk | ByteChunk | ECIChunk>;*/
@@ -85,8 +93,9 @@ abstract class DecodedQR {
   external set bytes(List<num> v);
   external JsArray<dynamic /*Chunk|ByteChunk|ECIChunk*/ > get chunks;
   external set chunks(JsArray<dynamic /*Chunk|ByteChunk|ECIChunk*/ > v);
-  external factory DecodedQR(
-      {String text,
-      List<num> bytes,
-      JsArray<dynamic /*Chunk|ByteChunk|ECIChunk*/ > chunks});
+  external factory DecodedQR({
+    String text,
+    List<num> bytes,
+    JsArray<dynamic /*Chunk|ByteChunk|ECIChunk*/ > chunks,
+  });
 }

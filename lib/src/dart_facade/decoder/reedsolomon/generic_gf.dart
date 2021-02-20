@@ -11,7 +11,11 @@ external num addOrSubtractGF(num a, num b);
 
 @JS()
 class GenericGF {
-  external factory GenericGF(num primitive, num size, num genBase);
+  external factory GenericGF(
+    num primitive,
+    num size,
+    num genBase,
+  );
 
   // @Ignore
   GenericGF.fakeConstructor$();

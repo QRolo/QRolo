@@ -3,7 +3,7 @@ library extractor;
 
 import 'package:js/js.dart';
 import 'package:qrolo/src/dart_facade/locator.dart';
-import './BitMatrix.dart' show BitMatrix;
+import 'bit_matrix.dart' show BitMatrix;
 
 @JS()
 external dynamic
@@ -14,4 +14,7 @@ external dynamic
         y: number;
     };
 }*/
-    extract(BitMatrix image, QRLocation location);
+    extract(
+  BitMatrix image,
+  QRLocation location,
+);

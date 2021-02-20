@@ -64,13 +64,17 @@ abstract class QRCode {
 abstract class Options {
   external String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ get inversionAttempts;
   external set inversionAttempts(
-      String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ v);
-  external factory Options(
-      {String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ inversionAttempts});
+    String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ v,
+  );
+  external factory Options({
+    String /*'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'*/ inversionAttempts,
+  });
 }
 
 @JS()
 external QRCode /*QRCode|Null*/ jsQR(
-    Uint8ClampedList /* Uint8ClampedArray */ data, num width, num height,
-    [Options
-        providedOptions]); /* WARNING: export assignment not yet supported. */
+  Uint8ClampedList /* Uint8ClampedArray */ data,
+  num width,
+  num height, [
+  Options providedOptions,
+]); /* WARNING: export assignment not yet supported. */

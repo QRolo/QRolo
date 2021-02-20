@@ -12,7 +12,10 @@ class BitMatrix {
   // @Ignore
   BitMatrix.fakeConstructor$();
 
-  external static BitMatrix createEmpty(num width, num height);
+  external static BitMatrix createEmpty(
+    num width,
+    num height,
+  );
   external num get width;
   external set width(num v);
   external num get height;
@@ -21,8 +24,18 @@ class BitMatrix {
   external set data(Uint8ClampedList v);
   external bool get(num x, num y);
   // If this was a first-party lib we would be able to decide named bool.
-  // ignore: avoid_positional_boolean_parameters
-  external void set(num x, num y, bool v);
-  // ignore: avoid_positional_boolean_parameters
-  external void setRegion(num left, num top, num width, num height, bool v);
+  external void set(
+    num x,
+    num y,
+    // ignore: avoid_positional_boolean_parameters
+    bool v,
+  );
+  external void setRegion(
+    num left,
+    num top,
+    num width,
+    num height,
+    // ignore: avoid_positional_boolean_parameters
+    bool v,
+  );
 }

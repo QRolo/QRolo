@@ -11,7 +11,10 @@ class BinarizedResult {
   final BitMatrix binarized;
   final BitMatrix? inverted;
 
-  const BinarizedResult(this.binarized, this.inverted);
+  const BinarizedResult(
+    this.binarized,
+    this.inverted,
+  );
 }
 
 @JS()

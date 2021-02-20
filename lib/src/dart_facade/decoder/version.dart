@@ -24,30 +24,32 @@ abstract class Version {
     }*/
       > get errorCorrectionLevels;
   external set errorCorrectionLevels(
-      JsArray<
-              dynamic /*{
+    JsArray<
+            dynamic /*{
         ecCodewordsPerBlock: number;
         ecBlocks: Array<{
             numBlocks: number;
             dataCodewordsPerBlock: number;
         }>;
     }*/
-              >
-          v);
-  external factory Version(
-      {num infoBits,
-      num versionNumber,
-      List<num> alignmentPatternCenters,
-      JsArray<
-              dynamic /*{
+            >
+        v,
+  );
+  external factory Version({
+    num infoBits,
+    num versionNumber,
+    List<num> alignmentPatternCenters,
+    JsArray<
+            dynamic /*{
         ecCodewordsPerBlock: number;
         ecBlocks: Array<{
             numBlocks: number;
             dataCodewordsPerBlock: number;
         }>;
     }*/
-              >
-          errorCorrectionLevels});
+            >
+        errorCorrectionLevels,
+  });
 }
 
 @JS()
