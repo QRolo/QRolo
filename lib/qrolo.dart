@@ -366,27 +366,20 @@ class _QRoloState extends State<QRolo> {
     int height,
   ) {
     // Creating a virtual canvas simply to capture imageData?
-    final html.CanvasElement sizedVideoCanvas = html.CanvasElement(
+    final html.CanvasElement sizedDrawnCanvasContextualisedFrame =
+        createDrawnCanvasFrameContext(
+      videoElement: videoElement,
       width: width,
       height: height,
     );
-    final html.CanvasRenderingContext2D context = sizedVideoCanvas.context2D;
 
     // Seems superfluous to do this just to get imageData
     // Though lots of canvas utility
     const int topLeftDestXLeft = 0;
     const int topLeftDestYTop = 0;
 
-    // `HTMLVideoElement` can be used as a `CanvasImageSource`
-    // Use frames being presented by a <video> element
-    // even if not visible
-    context.drawImage(
-      videoElement,
-      topLeftDestXLeft,
-      topLeftDestYTop,
-    );
-
-    html.ImageData imageData = context.getImageData(
+    final html.ImageData imageData =
+        sizedDrawnCanvasContextualisedFrame.context2D.getImageData(
       topLeftDestXLeft,
       topLeftDestYTop,
       width,
@@ -398,6 +391,35 @@ class _QRoloState extends State<QRolo> {
       SecurityError
      */
     return imageData;
+  }
+
+  /// Utility function
+  /// To reuse for both capture frame image data
+  /// and convert canvas (with context drawn) ito dataURI dataUrl
+  html.CanvasElement createDrawnCanvasFrameContext({
+    required html.VideoElement videoElement,
+    required int width,
+    required int height,
+    int topLeftDestXLeft = 0,
+    int topLeftDestYTop = 0,
+  }) {
+    // Creating a virtual canvas simply to draw + capture imageData?
+    final html.CanvasElement sizedVideoCanvas = html.CanvasElement(
+      width: width,
+      height: height,
+    );
+    final html.CanvasRenderingContext2D context = sizedVideoCanvas.context2D;
+
+    // `HTMLVideoElement` can be used as a `CanvasImageSource`
+    // Use frames being presented by a <video> element
+    // even if not visible
+    context.drawImage(
+      videoElement,
+      topLeftDestXLeft,
+      topLeftDestYTop,
+    );
+
+    return sizedVideoCanvas;
   }
 
   ///
