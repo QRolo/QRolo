@@ -123,6 +123,12 @@ class _QRoloState extends State<QRolo> {
   void startContinuousScanningLoop({
     int scanIntervalMs = DEFAULT_SCAN_INTERVAL_MILLISECONDS,
   }) {
+    /*
+      1. Start camera media stream
+        a. If null unable to capture then try again or error feedback dev/user
+      2. Play (add to video element)
+      3. Capture compare qr code (loop)
+    */
     // - FIXME: Do not need to re-call once the reference is available
     // Parts of the nested code flow should only be called once then...
 
