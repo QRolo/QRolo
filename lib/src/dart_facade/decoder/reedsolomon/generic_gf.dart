@@ -1,6 +1,8 @@
 @JS()
 library decoder.reedsolomon.GenericGF;
 
+import 'dart:js';
+
 import 'package:js/js.dart';
 import 'generic_gf_poly.dart' show GenericGFPoly;
 
@@ -21,10 +23,15 @@ class GenericGF {
   external set zero(GenericGFPoly v);
   external GenericGFPoly get one;
   external set one(GenericGFPoly v);
-  external get expTable;
-  external set expTable(v);
-  external get logTable;
-  external set logTable(v);
+
+  /// An array of size `this.size`
+  external JsArray<double> get expTable;
+  external set expTable(JsArray<double> v);
+
+  /// An array of size `this.size`
+  external JsArray<double> get logTable;
+  external set logTable(JsArray<double> v);
+
   external factory GenericGF(num primitive, num size, num genBase);
   external num multiply(num a, num b);
   external num inverse(num a);
