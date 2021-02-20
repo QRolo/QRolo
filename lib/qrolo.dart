@@ -1,5 +1,7 @@
 import 'dart:async';
-import 'dart:html' as html show DivElement, MediaStream, VideoElement;
+import 'dart:html' as html
+    show DivElement, DomError, DomException, MediaStream, VideoElement, window;
+import 'dart:js_util' show promiseToFuture;
 
 // https://github.com/flutter/flutter/issues/41563
 // Alternative use universal_ui wrapper
@@ -59,6 +61,11 @@ class QRolo extends StatefulWidget {
 
 class _QRoloState extends State<QRolo> {
   html.MediaStream? _cameraStream;
+
+  ///
+  /// @example
+  /// "NotFoundError: Requested device not found"
+  /// Indicates error on getUserMedia()
   String? _errorMessage;
   String viewFactoryDivViewID = 'qrolo-scanner-view';
   late html.VideoElement videoElement;
@@ -115,7 +122,7 @@ class _QRoloState extends State<QRolo> {
       (int id) => QRolo.videoDiv,
     );
 
-    startContinuousScanningLoop();
+    scanStream();
   }
 
   /// Methods should not be exposed
@@ -143,9 +150,13 @@ class _QRoloState extends State<QRolo> {
   }
 
   Future<void> scanStream() async {
-    // 1. Start camera stream
-    await callPlatformOpenMediaVideoStream();
+    // 1. Start camera stream and get back
+    _cameraStream = await callPlatformOpenMediaVideoStream();
 
+    if (_cameraStream == null) {
+      //
+      debugPrint('Error accessing camera stream getUserMedia()');
+    }
     // 2. Capture frame from the currently running stream
     // Current stream reference should be available
     // Periodically obtain rather than making a call each time
@@ -166,6 +177,44 @@ class _QRoloState extends State<QRolo> {
   /// Then finally trigger the HTMLVideoelement.play HTMLMediaElement play()
   /// Returns rejected promise if playback cannot be started
   Future<html.MediaStream?> callPlatformOpenMediaVideoStream() async {
-    return null;
+    try {
+      /*
+      final Map<String, Object> exampleVideoConstraintsOptions = {
+        'mandatory': {'minAspectRatio': 1.333, 'maxAspectRatio': 1.334},
+        'optional': [
+          {'minFrameRate': 60},
+          {'maxWidth': 640}
+        ]
+      };
+      */
+      const Map<String, Object> videoConstraints = {
+        'facingMode': 'environment',
+      };
+
+      await promiseToFuture<html.MediaStream>(
+        html.window.navigator.getUserMedia(
+          video: videoConstraints,
+        ),
+      );
+
+      return null;
+    } on html.DomException catch (domException, stackTrace) {
+      // Code actually breaks out exception rather than returning null
+
+      debugPrint(
+        'DomException ${domException.toString()}',
+      );
+      debugPrint(
+        stackTrace.toString(),
+      );
+
+      return null;
+    } on Exception catch (e, stackTrace) {
+      debugPrint(
+        'Unable to access camera stream getUserMedia(): ${e.toString} ${stackTrace.toString()}',
+      );
+
+      return null;
+    }
   }
 }
