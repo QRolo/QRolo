@@ -55,11 +55,11 @@ class QRolo extends StatefulWidget {
   static Future<bool> cameraAvailable() async {
     List<dynamic> sources =
         await html.window.navigator.mediaDevices!.enumerateDevices();
-    print("sources:");
+    debugPrint('sources:');
     // List<String> vidIds = [];
     bool hasCam = false;
     for (final e in sources) {
-      print(e);
+      debugPrint(e);
       if (e.kind == 'videoinput') {
         // vidIds.add(e['deviceId']);
         hasCam = true;
@@ -70,28 +70,24 @@ class QRolo extends StatefulWidget {
 }
 
 class _QRoloState extends State<QRolo> {
-  html.MediaStream? _localStream;
+  html.MediaStream? _cameraMediaStream;
   // html.CanvasElement canvas;
   // html.CanvasRenderingContext2D ctx;
   bool _inCalling = false;
-  bool _isTorchOn = false;
-  html.MediaRecorder? _mediaRecorder;
-  bool get _isRec => _mediaRecorder != null;
   Timer? timer;
-  String? code;
-  String? _errorMsg;
-  var front = false;
-  html.VideoElement? video;
-  String viewID = "your-view-id";
+  String? _scannedQRCode;
+  String? _errorMessage;
+  html.VideoElement? videoElMediaCanvasSource;
+  String viewID = 'qrolo-view-id';
 
   @override
   void initState() {
-    print("MY SCANNER initState");
+    debugPrint('QRolo init');
     super.initState();
-    video = html.VideoElement();
+    videoElMediaCanvasSource = html.VideoElement();
     // canvas = new html.CanvasElement(width: );
     // ctx = canvas.context2D;
-    QRolo.vidDiv.children = [video!];
+    QRolo.vidDiv.children = [videoElMediaCanvasSource!];
     // ignore: UNDEFINED_PREFIXED_NAME
     ui.platformViewRegistry
         .registerViewFactory(viewID, (int id) => QRolo.vidDiv);
@@ -137,14 +133,13 @@ class _QRoloState extends State<QRolo> {
 
   @override
   void dispose() {
-    print("Scanner.dispose");
     cancel();
     super.dispose();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> _makeCall() async {
-    if (_localStream != null) {
+    if (_cameraMediaStream != null) {
       return;
     }
 
@@ -166,16 +161,16 @@ class _QRoloState extends State<QRolo> {
       final mediaStream = await mediaDevices?.getUserMedia(constraintsMap);
       final stream = mediaStream;
 
-      _localStream = stream;
-      video?.srcObject = _localStream;
-      video?.setAttribute("playsinline",
+      _cameraMediaStream = stream;
+      videoElMediaCanvasSource?.srcObject = _cameraMediaStream;
+      videoElMediaCanvasSource?.setAttribute('playsinline',
           'true'); // required to tell iOS safari we don't want fullscreen
-      final dynamic playTest = await video?.play();
+      final dynamic playTest = await videoElMediaCanvasSource?.play();
     } catch (e) {
-      print("error on getUserMedia: ${e.toString()}");
+      debugPrint('error on getUserMedia: ${e.toString()}');
       cancel();
       setState(() {
-        _errorMsg = e.toString();
+        _errorMessage = e.toString();
       });
       return;
     }
@@ -196,22 +191,22 @@ class _QRoloState extends State<QRolo> {
   Future<void> _stopStream() async {
     try {
       // await _localStream.dispose();
-      _localStream!.getTracks().forEach((track) {
+      _cameraMediaStream!.getTracks().forEach((track) {
         if (track.readyState == 'live') {
           track.stop();
         }
       });
       // video.stop();
-      video?.srcObject = null;
-      _localStream = null;
+      videoElMediaCanvasSource?.srcObject = null;
+      _cameraMediaStream = null;
       // _localRenderer.srcObject = null;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
   void _toggleCamera() async {
-    final videoTrack = _localStream!
+    final videoTrack = _cameraMediaStream!
         .getVideoTracks()
         .firstWhere((track) => track.kind == 'video');
     // await videoTrack.switchCamera();
@@ -220,26 +215,27 @@ class _QRoloState extends State<QRolo> {
   }
 
   Future<dynamic> _captureFrame2() async {
-    if (_localStream == null) {
-      print("localstream is null, can't capture frame");
+    if (_cameraMediaStream == null) {
+      debugPrint("localstream is null, can't capture frame");
       return null;
     }
     html.CanvasElement canvas = new html.CanvasElement(
-        width: video?.videoWidth, height: video?.videoHeight);
+        width: videoElMediaCanvasSource?.videoWidth,
+        height: videoElMediaCanvasSource?.videoHeight);
     html.CanvasRenderingContext2D ctx = canvas.context2D;
     // canvas.width = video.videoWidth;
     // canvas.height = video.videoHeight;
-    ctx.drawImage(video!, 0, 0);
+    ctx.drawImage(videoElMediaCanvasSource!, 0, 0);
     html.ImageData imgData =
         ctx.getImageData(0, 0, canvas.width!, canvas.height!);
-    // print(imgData);
+    // debugPrint(imgData);
     var code = jsQR(imgData.data, canvas.width!, canvas.height!);
-    // print("CODE: $code");
+    // debugPrint('CODE: $code');
     if (code != null) {
-      print(code.data);
-      this.code = code.data;
-      Navigator.pop(context, this.code);
-      return this.code;
+      debugPrint(code.data);
+      this._scannedQRCode = code.data;
+      Navigator.pop(context, this._scannedQRCode);
+      return this._scannedQRCode;
     } else {
       Timer(Duration(milliseconds: 500), () {
         _captureFrame2();
@@ -248,27 +244,28 @@ class _QRoloState extends State<QRolo> {
   }
 
   Future<String?> _captureImage() async {
-    if (_localStream == null) {
-      print("localstream is null, can't capture frame");
+    if (_cameraMediaStream == null) {
+      debugPrint("localstream is null, can't capture frame");
       return null;
     }
     html.CanvasElement canvas = new html.CanvasElement(
-        width: video!.videoWidth, height: video!.videoHeight);
+        width: videoElMediaCanvasSource!.videoWidth,
+        height: videoElMediaCanvasSource!.videoHeight);
     html.CanvasRenderingContext2D ctx = canvas.context2D;
     // canvas.width = video.videoWidth;
     // canvas.height = video.videoHeight;
-    ctx.drawImage(video!, 0, 0);
-    var dataUrl = canvas.toDataUrl("image/jpeg", 0.9);
+    ctx.drawImage(videoElMediaCanvasSource!, 0, 0);
+    var dataUrl = canvas.toDataUrl('image/jpeg', 0.9);
     return dataUrl;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_errorMsg != null) {
-      return Center(child: Text(_errorMsg!));
+    if (_errorMessage != null) {
+      return Center(child: Text(_errorMessage!));
     }
-    if (_localStream == null) {
-      return Text("Loading...");
+    if (_cameraMediaStream == null) {
+      return Text('Loading...');
     }
     return Column(children: [
       Expanded(
@@ -300,7 +297,7 @@ class _QRoloState extends State<QRolo> {
           icon: Icon(Icons.camera),
           onPressed: () async {
             var imgUrl = await _captureImage();
-            print("Image URL: $imgUrl");
+            debugPrint('Image URL: $imgUrl');
             Navigator.pop(context, imgUrl);
           },
         ),
