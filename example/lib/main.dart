@@ -57,6 +57,7 @@ class _MyAppState extends State<MyApp> {
               child: Text('Running on: $_platformVersion\n'),
             ),
             SizedBox(height: 10),
+            // ! FIXME: Need FutureBuilder for the popup to work
             ElevatedButton(
               child: Text("Scan QR Code"),
               onPressed: () {
@@ -79,7 +80,7 @@ class _MyAppState extends State<MyApp> {
 
   void _openScan(BuildContext context) async {
     final code = await showDialog(
-      context: navigatorKey.currentState!.overlay!.context,
+      context: context,
       builder: (BuildContext context) {
         // var height = MediaQuery.of(context).size.height;
         // var width = MediaQuery.of(context).size.width;
