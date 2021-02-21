@@ -315,3 +315,47 @@ class _QRoloState extends State<QRolo> {
     ]);
   }
 }
+
+///
+///
+///
+///
+
+/// Example html on valid usage. <div> <video></video> </div>
+/// <flt-glass-pane style="position: absolute; inset: 0px; cursor: default"
+///   ><flt-semantics-placeholder
+///     role="button"
+///     aria-live="true"
+///     tabindex="0"
+///     aria-label="Enable accessibility"
+///     style="position: absolute; left: -1px; top: -1px; width: 1px; height: 1px"
+///   ></flt-semantics-placeholder
+///   ><flt-scene-host aria-hidden="true" style="pointer-events: none"
+///     ><flt-scene
+///       ><flt-canvas-container
+///         ><canvas
+///           width="1680"
+///           height="2196"
+///           style="position: absolute; width: 840px; height: 1098px"
+///         ></canvas
+///       ></flt-canvas-container>
+///       <div
+///         style="
+///           width: 640px;
+///           height: 480px;
+///           position: absolute;
+///           pointer-events: auto;
+///           transform-origin: 0px 0px 0px;
+///           transform: matrix(1, 0, 0, 1, 100, 126);
+///           opacity: 1;
+///         "
+///       >
+///         <video playsinline="true"></video>
+///       </div>
+///       <flt-canvas-container
+///         ><canvas
+///           width="1680"
+///           height="2196"
+///           style="position: absolute; width: 840px; height: 1098px"
+///         ></canvas></flt-canvas-container></flt-scene></flt-scene-host
+/// ></flt-glass-pane>
