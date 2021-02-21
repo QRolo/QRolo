@@ -234,13 +234,22 @@ class _QRoloState extends State<QRolo> {
     if (code != null) {
       debugPrint(code.data);
       this._scannedQRCode = code.data;
-      Navigator.pop(context, this._scannedQRCode);
+
+      // ! @return for use with showDialog
+      // This provides the return value
+      popReturnValueForShowDialog(context, code.data);
+
       return this._scannedQRCode;
     } else {
       Timer(Duration(milliseconds: 500), () {
         _captureFrame2();
       });
     }
+  }
+
+  /// Self-descriptive code
+  void popReturnValueForShowDialog(BuildContext context, String qrCodeResult) {
+    Navigator.pop<String>(context, qrCodeResult);
   }
 
   Future<String?> _captureImage() async {
