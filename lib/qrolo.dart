@@ -82,24 +82,22 @@ class _QRoloState extends State<QRolo> {
   String? code;
   String? _errorMsg;
   var front = false;
-  html.VideoElement? video;
+  late html.VideoElement _video;
   String viewID = "your-view-id";
 
   @override
   void initState() {
     print("MY SCANNER initState");
     super.initState();
-    video = html.VideoElement();
+    _video = html.VideoElement();
     // canvas = new html.CanvasElement(width: );
     // ctx = canvas.context2D;
-    QRolo.vidDiv.children = [video!];
+    QRolo.vidDiv.children = [_video];
     // ignore: UNDEFINED_PREFIXED_NAME
     ui.platformViewRegistry
         .registerViewFactory(viewID, (int id) => QRolo.vidDiv);
     // initRenderers();
-    Timer(Duration(milliseconds: 500), () {
-      start();
-    });
+    start();
   }
 
   void start() async {
@@ -174,10 +172,10 @@ class _QRoloState extends State<QRolo> {
       final stream = mediaStream;
 
       _localStream = stream;
-      video?.srcObject = _localStream;
-      video?.setAttribute("playsinline",
+      _video.srcObject = _localStream;
+      _video.setAttribute("playsinline",
           'true'); // required to tell iOS safari we don't want fullscreen
-      final dynamic playTest = await video?.play();
+      final dynamic playTest = await _video.play();
     } catch (e) {
       print("error on getUserMedia: ${e.toString()}");
       cancel();
@@ -209,7 +207,7 @@ class _QRoloState extends State<QRolo> {
         }
       });
       // video.stop();
-      video?.srcObject = null;
+      _video.srcObject = null;
       _localStream = null;
       // _localRenderer.srcObject = null;
     } catch (e) {
@@ -232,11 +230,11 @@ class _QRoloState extends State<QRolo> {
       return null;
     }
     html.CanvasElement canvas = new html.CanvasElement(
-        width: video?.videoWidth, height: video?.videoHeight);
+        width: _video.videoWidth, height: _video.videoHeight);
     html.CanvasRenderingContext2D ctx = canvas.context2D;
     // canvas.width = video.videoWidth;
     // canvas.height = video.videoHeight;
-    ctx.drawImage(video!, 0, 0);
+    ctx.drawImage(_video, 0, 0);
     html.ImageData imgData =
         ctx.getImageData(0, 0, canvas.width!, canvas.height!);
     // print(imgData);
@@ -260,11 +258,11 @@ class _QRoloState extends State<QRolo> {
       return null;
     }
     html.CanvasElement canvas = new html.CanvasElement(
-        width: video!.videoWidth, height: video!.videoHeight);
+        width: _video.videoWidth, height: _video.videoHeight);
     html.CanvasRenderingContext2D ctx = canvas.context2D;
     // canvas.width = video.videoWidth;
     // canvas.height = video.videoHeight;
-    ctx.drawImage(video!, 0, 0);
+    ctx.drawImage(_video, 0, 0);
     var dataUrl = canvas.toDataUrl("image/jpeg", 0.9);
     return dataUrl;
   }
