@@ -155,12 +155,24 @@ class _QRoloState extends State<QRolo> {
           video: VideoOptions(
         facingMode: (front ? "user" : "environment"),
       ));
-      // dart style, not working properly:
-      // var stream =
-      //     await html.window.navigator.mediaDevices.getUserMedia(constraints);
-      // straight JS:
-      final stream =
-          await promiseToFuture<html.MediaStream>(getUserMedia(constraints));
+
+      const Map<String, Map<String, String>> constraintsMap = {
+        'video': {
+          'facingMode': 'environment',
+        },
+      };
+      /** 
+       * ! Warning
+       * @deprecated html.window.navigator.getUserMedia() callback vs
+       * @see new promise html.window.navigator.mediaDevices?.getUserMedia();
+       * 
+       * TypeError: Failed to execute 'getUserMedia' on 
+       * 'MediaDevices': At least one of audio and video must be
+       */
+      final mediaDevices = html.window.navigator.mediaDevices;
+      final mediaStream = await mediaDevices?.getUserMedia(constraintsMap);
+      final stream = mediaStream;
+
       _localStream = stream;
       video?.srcObject = _localStream;
       video?.setAttribute("playsinline",
