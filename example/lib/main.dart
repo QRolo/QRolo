@@ -71,7 +71,6 @@ class _MyAppState extends State<MyApp> {
               /// Other Flutter throws unbound render flex hit test errors
               child: QRolo(),
             ),
-            SizedBox(height: 640, width: 480)
           ],
         ),
       ),
