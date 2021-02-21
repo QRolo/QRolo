@@ -49,8 +49,8 @@ class QRolo extends StatefulWidget {
     final version = await _channel.invokeMethod<String>('getPlatformVersion');
   }
 
-  static html.DivElement viewDivElement =
-      html.DivElement(); // need a global for the registerViewFactory
+  // need a global for the registerViewFactory
+  static html.DivElement viewDivElement = html.DivElement();
 
   static Future<bool> cameraAvailable() async {
     List<dynamic> sources =
@@ -89,8 +89,10 @@ class _QRoloState extends State<QRolo> {
     // ctx = canvas.context2D;
     QRolo.viewDivElement.children = [videoElMediaCanvasSource!];
     // ignore: UNDEFINED_PREFIXED_NAME
-    ui.platformViewRegistry
-        .registerViewFactory(viewID, (int id) => QRolo.viewDivElement);
+    ui.platformViewRegistry.registerViewFactory(
+      viewID,
+      (int id) => QRolo.viewDivElement,
+    );
     // initRenderers();
     Timer(Duration(milliseconds: 500), () {
       start();
@@ -168,7 +170,7 @@ class _QRoloState extends State<QRolo> {
         'true',
       ); // required to tell iOS safari we don't want fullscreen
       final dynamic? playTest = await videoElMediaCanvasSource?.play();
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('error on getUserMedia: ${e.toString()}');
       cancel();
       setState(() {
