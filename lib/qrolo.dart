@@ -52,20 +52,9 @@ class QRolo extends StatefulWidget {
   // need a global for the registerViewFactory
   static html.DivElement viewDivElement = html.DivElement();
 
-  static Future<bool> cameraAvailable() async {
-    List<dynamic> sources =
-        await html.window.navigator.mediaDevices!.enumerateDevices();
-    debugPrint('sources:');
-    // List<String> vidIds = [];
-    bool hasCam = false;
-    for (final e in sources) {
-      debugPrint(e.toString());
-      if (e.kind == 'videoinput') {
-        // vidIds.add(e['deviceId']);
-        hasCam = true;
-      }
-    }
-    return hasCam;
+  /// Utility to help only allow the camera widget when available
+  static Future<bool> isCameraAvailable() async {
+    return isCameraAvailableInMediaDevices();
   }
 }
 
