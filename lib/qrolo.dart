@@ -36,9 +36,9 @@ const int defaultScanIntervalMilliseconds = 500;
 /// Other Flutter throws unbound render flex hit test errors
 class QRolo extends StatefulWidget {
   /// clickToCapture to show a button to capture a Data URL for the image
-  final bool clickToCapture;
+  final bool isCaptureOnTapEnabled;
 
-  const QRolo({this.clickToCapture = false, Key? key}) : super(key: key);
+  const QRolo({this.isCaptureOnTapEnabled = false, Key? key}) : super(key: key);
 
   @override
   _QRoloState createState() => _QRoloState();
@@ -49,7 +49,7 @@ class QRolo extends StatefulWidget {
     final version = await _channel.invokeMethod<String>('getPlatformVersion');
   }
 
-  static html.DivElement vidDiv =
+  static html.DivElement viewDivElement =
       html.DivElement(); // need a global for the registerViewFactory
 
   static Future<bool> cameraAvailable() async {
@@ -59,7 +59,7 @@ class QRolo extends StatefulWidget {
     // List<String> vidIds = [];
     bool hasCam = false;
     for (final e in sources) {
-      debugPrint(e);
+      debugPrint(e.toString());
       if (e.kind == 'videoinput') {
         // vidIds.add(e['deviceId']);
         hasCam = true;
@@ -87,10 +87,10 @@ class _QRoloState extends State<QRolo> {
     videoElMediaCanvasSource = html.VideoElement();
     // canvas = new html.CanvasElement(width: );
     // ctx = canvas.context2D;
-    QRolo.vidDiv.children = [videoElMediaCanvasSource!];
+    QRolo.viewDivElement.children = [videoElMediaCanvasSource!];
     // ignore: UNDEFINED_PREFIXED_NAME
     ui.platformViewRegistry
-        .registerViewFactory(viewID, (int id) => QRolo.vidDiv);
+        .registerViewFactory(viewID, (int id) => QRolo.viewDivElement);
     // initRenderers();
     Timer(Duration(milliseconds: 500), () {
       start();
@@ -113,7 +113,7 @@ class _QRoloState extends State<QRolo> {
     //     }
     //   });
     // }
-    if (!widget.clickToCapture) {
+    if (!widget.isCaptureOnTapEnabled) {
       // instead of periodic, which seems to have some timing issues, going to call timer AFTER the capture.
       Timer(Duration(milliseconds: 200), () {
         _captureFrame2();
@@ -163,9 +163,11 @@ class _QRoloState extends State<QRolo> {
 
       _cameraMediaStream = stream;
       videoElMediaCanvasSource?.srcObject = _cameraMediaStream;
-      videoElMediaCanvasSource?.setAttribute('playsinline',
-          'true'); // required to tell iOS safari we don't want fullscreen
-      final dynamic playTest = await videoElMediaCanvasSource?.play();
+      videoElMediaCanvasSource?.setAttribute(
+        'playsinline',
+        'true',
+      ); // required to tell iOS safari we don't want fullscreen
+      final dynamic? playTest = await videoElMediaCanvasSource?.play();
     } catch (e) {
       debugPrint('error on getUserMedia: ${e.toString()}');
       cancel();
@@ -301,7 +303,7 @@ class _QRoloState extends State<QRolo> {
       //   icon: Icon(Icons.switch_video),
       //   onPressed: _toggleCamera,
       // ),
-      if (widget.clickToCapture)
+      if (widget.isCaptureOnTapEnabled)
         IconButton(
           icon: Icon(Icons.camera),
           onPressed: () async {
