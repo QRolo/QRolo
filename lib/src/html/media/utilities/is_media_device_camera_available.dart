@@ -7,6 +7,7 @@ Future<bool> isCameraAvailableInMediaDevices() async {
   final mediaDevicesGenerated =
       await html.window.navigator.mediaDevices!.enumerateDevices();
 
+  // InputDeviceInfo or MediaDeviceInfo
   final List<html.MediaDeviceInfo> mediaDeviceInfos =
       mediaDevicesGenerated.cast<html.MediaDeviceInfo>();
 
