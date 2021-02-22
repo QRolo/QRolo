@@ -164,22 +164,47 @@ class _QRoloState extends State<QRolo> {
         return;
       }
 
-      final html.MediaStream mediaStream = await mediaDevices
-          .getUserMedia(constraintsMap)
-          .catchError((dynamic domException) {
+      final Future<dynamic?> devices =
+          (mediaDevices.getUserMedia(constraintsMap) as Future<dynamic?>)
+              .onError(
+        (html.DomException error, stackTrace) {
+          // Paused on promise rejection
+          // Error: Expected a value of type 'DomException', but got one of type 'TypeErrorImpl'
+          /* 
+          error: DOMException: Permission denied
+          code: 0
+          message: "Permission denied"
+          name: "NotAllowedError"
+          */
+          throw (error);
+
+          return error;
+        },
+      ).catchError((dynamic domException) {
         castHandleMediaDomException(domException);
 
+        // Poor practice to use errors to control logic flow. goto.
+        // Use return if you want the error to be caught inside catchError()
+        // Use throw if you want the error to be caught inside try/catch.
+
+        throw 'Throw crazy error!';
         // Uncaught (in promise) Error: Expected a value of type 'FutureOr<MediaStream$>',
         // but got one of type 'Null'
         final html.MediaStream test = html.MediaStream();
 
-        return test;
+        // We really should not use errors for logic flow..
+        // https://github.com/dart-lang/sdk/issues/44386
+        throw Error();
       });
 
-      if (mediaDevices == null) {
-        return null;
+      final dynamic mediaStream = await devices;
+
+      if (mediaStream == null) {
+        return;
       }
-      final stream = mediaStream;
+
+      // if (mediaStream is html.MediaStream) {}
+      final html.MediaStream stream = mediaStream as html.MediaStream;
       // Retrieve stream even if permissions blocked and active: false
 
       if (stream == null) {
@@ -231,8 +256,10 @@ class _QRoloState extends State<QRolo> {
 
   void castHandleMediaDomException(dynamic domExceptionDynamic) {
     // But can strangely assert type anyway, maybe some promise interop bug
+
     final html.DomException a = domExceptionDynamic as html.DomException;
     debugPrint('DOM Exception name: ${a.name}, message: ${a.message}');
+
     // Uncaught (in promise) Error: Expected a value of type '(Object) => dynamic', but got one of type '((Object) => dynamic) => Null'
     // Future<Null>
     /* 
