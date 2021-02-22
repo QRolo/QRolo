@@ -163,41 +163,29 @@ class _QRoloState extends State<QRolo> {
       if (mediaDevices == null) {
         return;
       }
-
-      final Future<dynamic?> devices =
-          (mediaDevices.getUserMedia(constraintsMap) as Future<dynamic?>)
-              .onError(
-        (html.DomException error, stackTrace) {
-          // Paused on promise rejection
-          // Error: Expected a value of type 'DomException', but got one of type 'TypeErrorImpl'
-          /* 
+      try {
+        final dynamic? devices = await (mediaDevices
+                .getUserMedia(constraintsMap) as Future<dynamic?>)
+            .onError(
+          (html.DomException error, stackTrace) {
+            // Paused on promise rejection
+            // Error: Expected a value of type 'DomException', but got one of type 'TypeErrorImpl'
+            /* 
           error: DOMException: Permission denied
           code: 0
           message: "Permission denied"
           name: "NotAllowedError"
           */
-          throw (error);
+            throw 'Help';
 
-          return error;
-        },
-      ).catchError((dynamic domException) {
-        castHandleMediaDomException(domException);
-
-        // Poor practice to use errors to control logic flow. goto.
-        // Use return if you want the error to be caught inside catchError()
-        // Use throw if you want the error to be caught inside try/catch.
-
-        throw 'Throw crazy error!';
-        // Uncaught (in promise) Error: Expected a value of type 'FutureOr<MediaStream$>',
-        // but got one of type 'Null'
-        final html.MediaStream test = html.MediaStream();
-
-        // We really should not use errors for logic flow..
-        // https://github.com/dart-lang/sdk/issues/44386
-        throw Error();
-      });
-
-      final dynamic mediaStream = await devices;
+            return error;
+          },
+        );
+      } catch (err) {
+        debugPrint('t');
+        return;
+      }
+      final dynamic? mediaStream = null;
 
       if (mediaStream == null) {
         return;
