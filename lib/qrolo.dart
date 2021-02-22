@@ -6,6 +6,7 @@ import 'dart:html' as html
         DivElement,
         DomException,
         ImageData,
+        MediaDevices,
         MediaRecorder,
         MediaStream,
         VideoElement,
@@ -47,6 +48,8 @@ class QRolo extends StatefulWidget {
 
   static Future<String?> get platformVersion async {
     final version = await _channel.invokeMethod<String>('getPlatformVersion');
+
+    return version;
   }
 
   // need a global for the registerViewFactory
@@ -148,17 +151,69 @@ class _QRoloState extends State<QRolo> {
        * TypeError: Failed to execute 'getUserMedia' on 
        * 'MediaDevices': At least one of audio and video must be
        */
+      try {
+        final mediaDevices = html.window.navigator.mediaDevices;
+      } catch (e) {
+        debugPrint('BIG ERROR e.toString()');
+
+        return;
+      }
       final mediaDevices = html.window.navigator.mediaDevices;
-      final mediaStream = await mediaDevices?.getUserMedia(constraintsMap);
+
+      if (mediaDevices == null) {
+        return;
+      }
+
+      final html.MediaStream mediaStream = await mediaDevices
+          .getUserMedia(constraintsMap)
+          .catchError((dynamic domException) {
+        castHandleMediaDomException(domException);
+
+        // Uncaught (in promise) Error: Expected a value of type 'FutureOr<MediaStream$>',
+        // but got one of type 'Null'
+        final html.MediaStream test = html.MediaStream();
+
+        return test;
+      });
+
+      if (mediaDevices == null) {
+        return null;
+      }
       final stream = mediaStream;
+      // Retrieve stream even if permissions blocked and active: false
+
+      if (stream == null) {
+        return;
+      }
 
       _cameraMediaStream = stream;
       videoElMediaCanvasSource?.srcObject = _cameraMediaStream;
+      // Explicit inline the video within widget.
+      // iOS Safari would expand fullscreen automatically once playback begins.
+      // Check iOS versions
+      // https://webkit.org/blog/6784/new-video-policies-for-ios/
       videoElMediaCanvasSource?.setAttribute(
         'playsinline',
         'true',
-      ); // required to tell iOS safari we don't want fullscreen
-      final dynamic? playTest = await videoElMediaCanvasSource?.play();
+      );
+
+      if (videoElMediaCanvasSource == null) {
+        return;
+      }
+
+      try {
+        final dynamic? playTest =
+            await videoElMediaCanvasSource!.play().catchError((dynamic err) {
+          try {
+            // Error: NotAllowedError: play() failed because the user didn't interact with the document first.
+            debugPrint(err.toString());
+          } catch (reject) {
+            debugPrint(reject.toString());
+          }
+        });
+      } catch (ex) {
+        debugPrint(ex.toString());
+      }
     } on Exception catch (e) {
       debugPrint('error on getUserMedia: ${e.toString()}');
       cancel();
@@ -171,6 +226,42 @@ class _QRoloState extends State<QRolo> {
 
     setState(() {
       _inCalling = true;
+    });
+  }
+
+  void castHandleMediaDomException(dynamic domExceptionDynamic) {
+    // But can strangely assert type anyway, maybe some promise interop bug
+    final html.DomException a = domExceptionDynamic as html.DomException;
+    debugPrint('DOM Exception name: ${a.name}, message: ${a.message}');
+    // Uncaught (in promise) Error: Expected a value of type '(Object) => dynamic', but got one of type '((Object) => dynamic) => Null'
+    // Future<Null>
+    /* 
+      **This is not a html.DomException**
+      code: 8
+      message: "Requested device not found"
+      name: "NotFoundError"
+    
+      DOMException.NOT_FOUND_ERR: 8
+    */
+
+    //  DOMException: Requested device not found
+    // Error: NotFoundError: Requested device not found
+    debugPrint('Error caught: $domExceptionDynamic');
+    _updateErrorMessage(
+      'Unable to access camera stream \n'
+      'Please check camera devices/permissions \n'
+      'DOM Exception ${domExceptionDynamic.toString()}',
+    );
+  }
+
+  /// Reflect error message in widget state displayed text as well
+  /// Widget conditionally builds depending on error or loading message
+  void _updateErrorMessage(String message) {
+    debugPrint(
+      message,
+    );
+    setState(() {
+      _errorMessage = message;
     });
   }
 
@@ -219,8 +310,23 @@ class _QRoloState extends State<QRolo> {
     // canvas.width = video.videoWidth;
     // canvas.height = video.videoHeight;
     ctx.drawImage(videoElMediaCanvasSource!, 0, 0);
-    html.ImageData imgData =
-        ctx.getImageData(0, 0, canvas.width!, canvas.height!);
+
+    html.ImageData? imgData = await Future.sync(() {
+      return ctx.getImageData(0, 0, canvas.width!, canvas.height!);
+    }).catchError((dynamic domExceptionSourceZero) {
+      // DOMException: Failed to execute 'getImageData' on 'CanvasRenderingContext2D': The source width is 0.
+      debugPrint(domExceptionSourceZero.toString());
+      // Placeholder to avoid NullError ... ... badness
+      // Even though it should accept null when using optional return
+
+      // DOMException: Failed to construct 'ImageData': The source width is zero or not a number.
+      return html.ImageData(1, 1);
+    } as FutureOr<html.ImageData?> Function(dynamic err));
+
+    if (imgData.height <= 1) {
+      // This should be null but we had to use a placeholder on Dart beta.
+      return;
+    }
     // debugPrint(imgData);
     var code = jsQR(imgData.data, canvas.width!, canvas.height!);
     // debugPrint('CODE: $code');
