@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 
 /// Check media devices within current window / iframe
 Future<bool> isCameraAvailableInMediaDevices() async {
+  final mediaDevicesGenerated =
+      await html.window.navigator.mediaDevices!.enumerateDevices();
+
   final List<html.MediaDeviceInfo> mediaDeviceInfos =
-      await html.window.navigator.mediaDevices!.enumerateDevices()
-          as List<html.MediaDeviceInfo>;
+      mediaDevicesGenerated.cast<html.MediaDeviceInfo>();
 
   debugPrint(
     'sources: ${mediaDeviceInfos.toString()}',
