@@ -9,6 +9,7 @@ import 'dart:html' as html
         MediaStream,
         VideoElement,
         window;
+import 'dart:js';
 import 'dart:typed_data';
 // dart:ui is valid use import platformViewRegistry
 // https://github.com/flutter/flutter/issues/41563
@@ -23,11 +24,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
 import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart'
     show isCameraAvailableInMediaDevices;
-import 'package:qrolo/src/jsqr.dart' show jsQR;
+import 'package:qrolo/src/jsqr.dart' show Options, QRCode, jsQR;
 
 const int defaultScanIntervalMilliseconds = 500;
 
+const int _HAVE_ENOUGH_DATA = 4;
+
+abstract class ObjectDomException {
+  final String code;
+  final String name;
+  final String message;
+  const ObjectDomException(this.code, this.name, this.message);
+}
+
+T tryCast<T>(dynamic x, {required T fallback}) {
+  try {
+    return x as T;
+    // Hacky
+    // ignore: avoid_catching_errors
+  } on TypeError catch (error) {
+    debugPrint('$error TypeError when trying to cast $x to $T!');
+
+    return fallback;
+  }
+}
+
+T cast<T>(dynamic x, {T? fallback}) => x is T ? x : fallback!;
+
 /// The QRolo scanner widget
+/// !IMPORTANT: This widget needs to be bound in a sized box or other container
+/// Other Flutter throws unbound render flex hit test errors
 class QRolo extends StatefulWidget {
   @override
   _QRoloState createState() => _QRoloState();
@@ -77,6 +103,15 @@ class _QRoloState extends State<QRolo> {
   String? _errorMessage;
   String viewFactoryDivViewID = 'qrolo-scanner-view';
   late html.VideoElement videoElement;
+
+  final Key _uniqueHtmlWebViewElementKey = UniqueKey();
+  late html.VideoElement _videoElement;
+  late HtmlElementView _videoHtmlElementViewWidget;
+  bool isLoaded = false;
+  html.MediaStream? _videoStream;
+  late html.CanvasElement _canvasElement = html.CanvasElement();
+  late html.CanvasRenderingContext2D _canvasContext;
+
   // Make hook to exit on first scan found and stop loops.
 
   @override
@@ -84,12 +119,12 @@ class _QRoloState extends State<QRolo> {
     if (_errorMessage != null) {
       return Center(child: Text(_errorMessage!));
     }
-    if (_cameraStream == null) {
+    if (!isLoaded) {
       // Quick in-place loading message
       // Is it better design to expose hooks and let
       // the calling developer supply their own loading widgets?
 
-      return const Text('Loading...');
+      return Text('Loading...');
     }
 
     return Column(
@@ -101,9 +136,7 @@ class _QRoloState extends State<QRolo> {
                 child: Container(
                   margin: const EdgeInsets.all(0),
                   decoration: const BoxDecoration(color: Colors.black54),
-                  child: HtmlElementView(
-                    viewType: viewFactoryDivViewID,
-                  ),
+                  child: _videoHtmlElementViewWidget,
                 ),
               );
             },
@@ -119,18 +152,147 @@ class _QRoloState extends State<QRolo> {
     debugPrint('QRolo scanner init');
 
     // Create new VideoElement and add to view factory div
-    videoElement = html.VideoElement();
-    QRolo.videoDiv.children = [videoElement];
+    // videoElement = html.VideoElement();
+    // QRolo.videoDiv.children = [videoElement];
 
-    // This is valid usage on build
-    // Dev analyzer has not been updated to accept this yet.
+    // // This is valid usage on build
+    // // Dev analyzer has not been updated to accept this yet.
+    // // ignore: undefined_prefixed_name
+    // ui.platformViewRegistry.registerViewFactory(
+    //   viewFactoryDivViewID,
+    //   (int id) => QRolo.videoDiv,
+    // );
+
+    // New
+    // New rewrite
+
+    // Set up web element in web
+    open();
+  }
+
+  void open() {
+    QRolo.isCameraAvailable().then(
+      (value) => debugPrint('isCameraAvailable $value'),
+    );
+    // If camera is not available we should short circuit and do nothing.
+
+    // Set up web element in web
+    _videoElement = html.VideoElement();
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
-      viewFactoryDivViewID,
-      (int id) => QRolo.videoDiv,
+        viewFactoryDivViewID, (int viewID) => _videoElement);
+    _videoHtmlElementViewWidget = HtmlElementView(
+      key: _uniqueHtmlWebViewElementKey,
+      viewType: 'webcamVideoElement$_uniqueHtmlWebViewElementKey',
     );
 
-    scanStream();
+    const Map<String, Map<String, String>> constraintsMap = {
+      'video': {
+        'facingMode': 'environment',
+      },
+    };
+
+    html.window.navigator.mediaDevices!
+        .getUserMedia(
+      constraintsMap,
+    )
+        .then((html.MediaStream stream) {
+      startStreamVideo();
+      return;
+    }).catchError(
+            /* a type other than dynamic results in dart error errors.dart:187  */
+            (dynamic domExceptionDynamic) {
+      // But can strangely assert type anyway, maybe some promise interop bug
+      castHandleMediaDomException(domExceptionDynamic);
+    });
+  }
+
+  void castHandleMediaDomException(dynamic domExceptionDynamic) {
+    // But can strangely assert type anyway, maybe some promise interop bug
+    final html.DomException a = domExceptionDynamic as html.DomException;
+    debugPrint('DOM Exception name: ${a.name}, message: ${a.message}');
+    // Uncaught (in promise) Error: Expected a value of type '(Object) => dynamic', but got one of type '((Object) => dynamic) => Null'
+    // Future<Null>
+    /* 
+      **This is not a html.DomException**
+      code: 8
+      message: "Requested device not found"
+      name: "NotFoundError"
+    
+      DOMException.NOT_FOUND_ERR: 8
+    */
+
+    //  DOMException: Requested device not found
+    // Error: NotFoundError: Requested device not found
+    debugPrint('Error caught: $domExceptionDynamic');
+    _updateErrorMessage(
+      'Unable to access camera stream \n'
+      'Please check camera devices/permissions \n'
+      'DOM Exception ${domExceptionDynamic.toString()}',
+    );
+  }
+
+  String lole(double a) {
+    return '';
+  }
+
+  void startStreamVideo() async {
+    const Map<String, Map<String, String>> constraintsMap = {
+      'video': {
+        'facingMode': 'environment',
+      },
+    };
+    final html.MediaStream stream =
+        await html.window.navigator.mediaDevices!.getUserMedia(
+      constraintsMap,
+    );
+
+    _videoStream = stream;
+    _videoElement.srcObject = _videoStream;
+    _videoElement.setAttribute('playsinline', 'true');
+    /* await */ _videoElement.play();
+
+    _canvasContext = _canvasElement.context2D;
+
+    Future.delayed(Duration(milliseconds: 6000), () {
+      tick();
+      setState(() {
+        isLoaded = true;
+      });
+    });
+  }
+
+  bool _disposed = false;
+  void tick() {
+    print('tick');
+    if (_disposed) {
+      return;
+    }
+
+    if (_videoElement.readyState == _HAVE_ENOUGH_DATA) {
+      print('test');
+      _canvasElement.width = _videoElement.videoWidth;
+      _canvasElement.height = _videoElement.videoHeight;
+      _canvasContext.drawImage(_videoElement, 0, 0);
+      var imageData = _canvasContext.getImageData(
+        0,
+        0,
+        _canvasElement.width ?? 0,
+        _canvasElement.height ?? 0,
+      );
+      Options opts = Options(inversionAttempts: 'dontInvert');
+      QRCode code = jsQR(
+        imageData.data,
+        imageData.width,
+        imageData.height,
+        opts,
+      );
+      if (code != null) {
+        String value = code.data;
+        // this.widget.qrCodeCallback(value);
+      }
+    }
+    Future.delayed(Duration(milliseconds: 10), () => tick());
   }
 
   /// Methods should not be exposed
@@ -247,6 +409,24 @@ class _QRoloState extends State<QRolo> {
         ]
       };
       */
+
+      // const Map<String, Map<String, String>> constraintsMap = {
+      //   'video': {
+      //     'facingMode': 'environment',
+      //   },
+      // };
+      // /**
+      //  * ! Warning
+      //  * @deprecated html.window.navigator.getUserMedia() callback vs
+      //  * @see new promise html.window.navigator.mediaDevices?.getUserMedia();
+      //  *
+      //  * TypeError: Failed to execute 'getUserMedia' on
+      //  * 'MediaDevices': At least one of audio and video must be
+      //  */
+      // final mediaDevices = html.window.navigator.mediaDevices;
+      // final mediaStream = await mediaDevices?.getUserMedia(constraintsMap);
+      // final stream = mediaStream;
+
       const Map<String, Object> videoConstraints = {
         'facingMode': 'environment',
       };
