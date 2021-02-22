@@ -30,6 +30,27 @@ const int defaultScanIntervalMilliseconds = 500;
 
 const int _HAVE_ENOUGH_DATA = 4;
 
+abstract class ObjectDomException {
+  final String code;
+  final String name;
+  final String message;
+  const ObjectDomException(this.code, this.name, this.message);
+}
+
+T tryCast<T>(dynamic x, {required T fallback}) {
+  try {
+    return x as T;
+    // Hacky
+    // ignore: avoid_catching_errors
+  } on TypeError catch (error) {
+    debugPrint('$error TypeError when trying to cast $x to $T!');
+
+    return fallback;
+  }
+}
+
+T cast<T>(dynamic x, {T? fallback}) => x is T ? x : fallback!;
+
 /// The QRolo scanner widget
 /// !IMPORTANT: This widget needs to be bound in a sized box or other container
 /// Other Flutter throws unbound render flex hit test errors
@@ -146,6 +167,16 @@ class _QRoloState extends State<QRolo> {
     // New rewrite
 
     // Set up web element in web
+    open();
+  }
+
+  void open() {
+    QRolo.isCameraAvailable().then(
+      (value) => debugPrint('isCameraAvailable $value'),
+    );
+    // If camera is not available we should short circuit and do nothing.
+
+    // Set up web element in web
     _videoElement = html.VideoElement();
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
@@ -168,7 +199,41 @@ class _QRoloState extends State<QRolo> {
         .then((html.MediaStream stream) {
       startStreamVideo();
       return;
+    }).catchError(
+            /* a type other than dynamic results in dart error errors.dart:187  */
+            (dynamic domExceptionDynamic) {
+      // But can strangely assert type anyway, maybe some promise interop bug
+      castHandleMediaDomException(domExceptionDynamic);
     });
+  }
+
+  void castHandleMediaDomException(dynamic domExceptionDynamic) {
+    // But can strangely assert type anyway, maybe some promise interop bug
+    final html.DomException a = domExceptionDynamic as html.DomException;
+    debugPrint('DOM Exception name: ${a.name}, message: ${a.message}');
+    // Uncaught (in promise) Error: Expected a value of type '(Object) => dynamic', but got one of type '((Object) => dynamic) => Null'
+    // Future<Null>
+    /* 
+      **This is not a html.DomException**
+      code: 8
+      message: "Requested device not found"
+      name: "NotFoundError"
+    
+      DOMException.NOT_FOUND_ERR: 8
+    */
+
+    //  DOMException: Requested device not found
+    // Error: NotFoundError: Requested device not found
+    debugPrint('Error caught: $domExceptionDynamic');
+    _updateErrorMessage(
+      'Unable to access camera stream \n'
+      'Please check camera devices/permissions \n'
+      'DOM Exception ${domExceptionDynamic.toString()}',
+    );
+  }
+
+  String lole(double a) {
+    return '';
   }
 
   void startStreamVideo() async {
