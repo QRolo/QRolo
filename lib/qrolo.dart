@@ -24,8 +24,15 @@ import 'dart:ui' as ui
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
-import 'package:qrolo/src/html/media/utilities/is_media_device_camera_available.dart'
+import 'package:qrolo/src/utilities/media_devices/is_media_device_camera_available.dart'
     show isCameraAvailableInMediaDevices;
+import 'package:qrolo/src/utilities/div/consts/video_element_ready_state.dart'
+    show
+        haveCurrentData,
+        haveEnoughData,
+        haveFutureData,
+        haveMetadata,
+        haveNothing;
 import 'package:qrolo/src/jsqr.dart' show jsQR;
 
 import 'package:js/js.dart' show JS, anonymous;
@@ -77,17 +84,25 @@ class _QRoloState extends State<QRolo> {
     debugPrint('QRolo init ${DateTime.now()}');
     super.initState();
     videoElMediaCanvasSource = html.VideoElement();
-    // canvas = new html.CanvasElement(width: );
-    // ctx = canvas.context2D;
+
     QRolo.viewDivElement.children = [videoElMediaCanvasSource!];
     // ignore: UNDEFINED_PREFIXED_NAME
     ui.platformViewRegistry.registerViewFactory(
       viewID,
       (int id) => QRolo.viewDivElement,
     );
-    // initRenderers();
 
-    Timer(const Duration(milliseconds: defaultScanIntervalMilliseconds), () {
+    // Some legacy sample code was in here?
+    // Another secondary developer made a spaghetti out of a better example
+    // Flutter WebRTC
+    // E.g. converting the videoinput enumerator into for loop for no reason..
+    // https://github.com/flutter-webrtc/flutter-webrtc/blob/c2ce4767bcc9635f5f317b134f0500a8c4d482b5/example/lib/src/get_user_media_sample.dart
+
+    const delayDuration = const Duration(
+      milliseconds: defaultScanIntervalMilliseconds,
+    );
+
+    Timer(delayDuration, () {
       // This time delay is not required
       debugPrint('delayed start ${DateTime.now()}');
       start();
