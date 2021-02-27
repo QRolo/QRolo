@@ -108,7 +108,18 @@ class _MyHomePageState extends State<MyHomePage> {
       platformVersion = await QRolo.platformVersion;
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
+    } on Exception catch (err) {
+      platformVersion = err.toString();
     }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _platformVersion = platformVersion ?? 'Unknown';
+    });
   }
 
   void testAlert(BuildContext context) {
