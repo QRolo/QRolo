@@ -372,18 +372,24 @@ class _QRoloState extends State<QRolo> {
     html.MediaStream checkedMediaStream,
   ) async {
     if (_cameraMediaStream == null) {
+      // - FIXME: Unused now. We use checkedMediaStream instead.
       debugPrint("localstream is null, can't capture frame");
       return null;
     }
     final html.CanvasElement canvas = html.CanvasElement(
-      width: videoElMediaCanvasSource?.videoWidth,
-      height: videoElMediaCanvasSource?.videoHeight,
+      width: checkedVideoElementForCanvasSizeDrawing.videoWidth,
+      height: checkedVideoElementForCanvasSizeDrawing.videoHeight,
     );
     final html.CanvasRenderingContext2D ctx = canvas.context2D;
     // canvas.width = video.videoWidth;
     // canvas.height = video.videoHeight;
-    ctx.drawImage(videoElMediaCanvasSource!, 0, 0);
+    ctx.drawImage(
+      checkedVideoElementForCanvasSizeDrawing,
+      0,
+      0,
+    );
 
+    // Experiment with error handling in mixed async
     html.ImageData? imgData = await Future.sync(() {
       return ctx.getImageData(0, 0, canvas.width!, canvas.height!);
     }).catchError((dynamic domExceptionSourceZero) {
