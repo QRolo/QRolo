@@ -402,8 +402,8 @@ class _QRoloState extends State<QRolo> {
       // This should be null but we had to use a placeholder on Dart beta.
       return;
     }
-    // debugPrint(imgData);
-    final QRCode code = jsQR(imgData.data, canvas.width!, canvas.height!);
+
+    final QRCode? code = jsQR(imgData.data, canvas.width!, canvas.height!);
     // debugPrint('CODE: $code');
     if (code != null) {
       debugPrint(code.data);

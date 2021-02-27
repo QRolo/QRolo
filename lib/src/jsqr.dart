@@ -53,8 +53,9 @@ abstract class Options {
   });
 }
 
+/// Can return null or the given QRCode object
 @JS()
-external QRCode /*QRCode|Null*/ jsQR(
+external QRCode? /*QRCode|Null*/ jsQR(
   Uint8ClampedList /* Uint8ClampedArray */ data,
   num width,
   num height, [
