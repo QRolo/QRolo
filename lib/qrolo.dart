@@ -127,9 +127,27 @@ class _QRoloState extends State<QRolo> {
     //   });
     // }
     if (!widget.isCaptureOnTapEnabled) {
+      // ? Timing issues were probably simply because of future async -_- handling
       // instead of periodic, which seems to have some timing issues, going to call timer AFTER the capture.
       Timer(const Duration(milliseconds: 200), () {
-        _captureFrame2();
+        final elVideo = videoElMediaCanvasSource;
+        final streamInput = _cameraMediaStream;
+
+        if (elVideo == null) {
+          debugPrint("Web video is not available");
+
+          return;
+        }
+        if (streamInput == null) {
+          debugPrint("localstream is null, can't capture frame");
+
+          return;
+        }
+
+        _captureFrame2(
+          elVideo,
+          streamInput,
+        );
       });
     }
   }
@@ -345,16 +363,23 @@ class _QRoloState extends State<QRolo> {
     await _makeCall();
   }
 
-  Future<dynamic> _captureFrame2() async {
+  /// Virtual draw and capture image data out into jsqr for QR code scan
+  ///
+  /// Not sure if we need to go through html if there is a faster
+  /// way to get the image data matrix directly
+  Future<dynamic> _captureFrame2(
+    html.VideoElement checkedVideoElementForCanvasSizeDrawing,
+    html.MediaStream checkedMediaStream,
+  ) async {
     if (_cameraMediaStream == null) {
       debugPrint("localstream is null, can't capture frame");
       return null;
     }
-    html.CanvasElement canvas = html.CanvasElement(
+    final html.CanvasElement canvas = html.CanvasElement(
       width: videoElMediaCanvasSource?.videoWidth,
       height: videoElMediaCanvasSource?.videoHeight,
     );
-    html.CanvasRenderingContext2D ctx = canvas.context2D;
+    final html.CanvasRenderingContext2D ctx = canvas.context2D;
     // canvas.width = video.videoWidth;
     // canvas.height = video.videoHeight;
     ctx.drawImage(videoElMediaCanvasSource!, 0, 0);
@@ -388,8 +413,27 @@ class _QRoloState extends State<QRolo> {
 
       return this._scannedQRCode;
     } else {
-      Timer(Duration(milliseconds: 500), () {
-        _captureFrame2();
+      Timer(const Duration(milliseconds: 500), () {
+        // Now recheck the global state and pass back in?
+
+        final elVideo = videoElMediaCanvasSource;
+        final streamInput = _cameraMediaStream;
+
+        if (elVideo == null) {
+          debugPrint("Web video is not available");
+
+          return;
+        }
+        if (streamInput == null) {
+          debugPrint("localstream is null, can't capture frame");
+
+          return;
+        }
+
+        _captureFrame2(
+          elVideo,
+          streamInput,
+        );
       });
     }
   }
