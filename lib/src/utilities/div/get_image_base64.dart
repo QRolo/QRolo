@@ -1,6 +1,6 @@
 import 'dart:html' show CanvasElement, VideoElement;
 
-import 'package:qrolo/src/utilities/canvas/virtual_draw.dart'
+import 'package:qrolo/src/utilities/canvas/get_context_virtual_draw_context_from_video_element.dart'
     show createPredrawnContextualisedCanvasFrameFromVideoElement;
 
 /// API utility for quick saving with the current video
