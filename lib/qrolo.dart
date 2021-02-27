@@ -74,7 +74,7 @@ class _QRoloState extends State<QRolo> {
 
   @override
   void initState() {
-    debugPrint('QRolo init');
+    debugPrint('QRolo init ${DateTime.now()}');
     super.initState();
     videoElMediaCanvasSource = html.VideoElement();
     // canvas = new html.CanvasElement(width: );
@@ -86,7 +86,10 @@ class _QRoloState extends State<QRolo> {
       (int id) => QRolo.viewDivElement,
     );
     // initRenderers();
-    Timer(Duration(milliseconds: 500), () {
+
+    Timer(const Duration(milliseconds: defaultScanIntervalMilliseconds), () {
+      // This time delay is not required
+      debugPrint('delayed start ${DateTime.now()}');
       start();
     });
   }
