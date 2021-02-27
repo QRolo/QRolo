@@ -1,6 +1,6 @@
 name: qrolo
 description: QR code scanning plugin with web compatibility! Nullsafe web QR scanner for Flutter web projects. Scan QR codes and capture images all from the comfort of your own desktop or mobile browser.
-version: 0.0.2-nullsafety.01.2.12.0-259.9.beta
+version: 0.1.0-nullsafety.01.2.12.0-259.9.beta
 homepage: https://qrolo.github.io/
 repository: https://github.com/QRolo/QRolo
 
@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
+  js: ^0.6.3
 
 dev_dependencies:
   flutter_test:
