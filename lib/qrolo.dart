@@ -350,9 +350,10 @@ class _QRoloState extends State<QRolo> {
       debugPrint("localstream is null, can't capture frame");
       return null;
     }
-    html.CanvasElement canvas = new html.CanvasElement(
-        width: videoElMediaCanvasSource?.videoWidth,
-        height: videoElMediaCanvasSource?.videoHeight);
+    html.CanvasElement canvas = html.CanvasElement(
+      width: videoElMediaCanvasSource?.videoWidth,
+      height: videoElMediaCanvasSource?.videoHeight,
+    );
     html.CanvasRenderingContext2D ctx = canvas.context2D;
     // canvas.width = video.videoWidth;
     // canvas.height = video.videoHeight;
