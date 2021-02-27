@@ -261,13 +261,12 @@ class _MyHomePageState extends State<MyHomePage> {
               _openScan(context);
             },
           ),
-          Container(
+          SizedBox(
             width: 640,
             height: 480,
 
             /// !IMPORTANT: This widget needs to be bound in a sized box or other container
             /// Other Flutter throws unbound render flex hit test errors
-            child: QRolo(),
           ),
           RaisedButton(
             color: Colors.redAccent,
