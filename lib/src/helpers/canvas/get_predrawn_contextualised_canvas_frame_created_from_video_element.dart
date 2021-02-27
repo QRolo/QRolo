@@ -3,7 +3,7 @@ import 'dart:html' show CanvasElement, CanvasRenderingContext2D, VideoElement;
 /// Utility function
 /// To reuse for both capture frame image data
 /// and convert canvas (with context drawn) ito dataURI dataUrl
-CanvasElement createPredrawnContextualisedCanvasFrameFromVideoElement({
+CanvasElement getPredrawnContextualisedCanvasFrameCreatedFromVideoElement({
   required VideoElement videoElement,
   int topLeftDestXLeft = 0,
   int topLeftDestYTop = 0,

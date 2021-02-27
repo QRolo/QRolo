@@ -24,6 +24,8 @@ import 'dart:ui' as ui
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
+import 'package:qrolo/src/helpers/canvas/get_predrawn_contextualised_canvas_frame_created_from_video_element.dart'
+    show getPredrawnContextualisedCanvasFrameCreatedFromVideoElement;
 
 import 'package:qrolo/src/html/div/video/consts/video_element_ready_state.dart'
     show

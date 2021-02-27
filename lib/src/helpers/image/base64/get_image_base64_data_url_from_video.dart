@@ -1,7 +1,7 @@
 import 'dart:html' show CanvasElement, VideoElement;
 
-import 'package:qrolo/src/helpers/canvas/get_context_virtual_draw_context_from_video_element.dart'
-    show createPredrawnContextualisedCanvasFrameFromVideoElement;
+import 'package:qrolo/src/helpers/canvas/get_predrawn_contextualised_canvas_frame_created_from_video_element.dart'
+    show getPredrawnContextualisedCanvasFrameCreatedFromVideoElement;
 
 /// API utility for quick saving with the current video
 /// Blob is faster than dataUrl though
@@ -20,7 +20,7 @@ String getImageBase64DataUrlFromVideo({
   int topLeftDestYTop = 0,
 }) {
   final CanvasElement frameCanvas =
-      createPredrawnContextualisedCanvasFrameFromVideoElement(
+      getPredrawnContextualisedCanvasFrameCreatedFromVideoElement(
     videoElement: videoElement,
   );
 

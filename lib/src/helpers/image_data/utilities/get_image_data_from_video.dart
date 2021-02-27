@@ -1,7 +1,7 @@
 import 'dart:html' show CanvasElement, ImageData, VideoElement;
 
-import 'package:qrolo/src/helpers/canvas/get_context_virtual_draw_context_from_video_element.dart'
-    show createPredrawnContextualisedCanvasFrameFromVideoElement;
+import 'package:qrolo/src/helpers/canvas/get_predrawn_contextualised_canvas_frame_created_from_video_element.dart'
+    show getPredrawnContextualisedCanvasFrameCreatedFromVideoElement;
 import 'package:qrolo/src/helpers/image_data/utilities/get_image_data_from_canvas.dart'
     show getImageDataFromCanvas;
 
@@ -22,7 +22,7 @@ ImageData captureImageDataFrameFromStream(
 ) {
   // Creating a virtual canvas simply to capture imageData?
   final CanvasElement sizedDrawnCanvasContextualisedFrame =
-      createPredrawnContextualisedCanvasFrameFromVideoElement(
+      getPredrawnContextualisedCanvasFrameCreatedFromVideoElement(
     videoElement: videoElement,
   );
 
