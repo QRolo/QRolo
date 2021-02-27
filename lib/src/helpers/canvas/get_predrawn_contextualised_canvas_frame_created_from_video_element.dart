@@ -10,8 +10,8 @@ CanvasElement getPredrawnContextualisedCanvasFrameCreatedFromVideoElement({
 }) {
   // Creating a virtual canvas simply to draw + capture imageData?
   final CanvasElement sizedVideoCanvas = CanvasElement(
-    width: videoElement.width,
-    height: videoElement.height,
+    width: videoElement.videoWidth,
+    height: videoElement.videoHeight,
   );
   final CanvasRenderingContext2D context = sizedVideoCanvas.context2D;
 
