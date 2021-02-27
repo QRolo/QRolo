@@ -36,7 +36,7 @@ import 'package:qrolo/src/html/div/video/consts/video_element_ready_state.dart'
         haveNothing;
 import 'package:qrolo/src/html/media/media_devices/is_media_device_camera_available.dart'
     show isCameraAvailableInMediaDevices;
-import 'package:qrolo/src/jsqr.dart' show jsQR;
+import 'package:qrolo/src/jsqr.dart' show QRCode, jsQR;
 
 import 'package:js/js.dart' show JS, anonymous;
 
@@ -385,7 +385,7 @@ class _QRoloState extends State<QRolo> {
     final html.CanvasRenderingContext2D canvasContext = canvas.context2D;
 
     // Experiment with error handling in mixed async
-    html.ImageData? imgData = await Future.sync(() {
+    final html.ImageData? imgData = await Future.sync(() {
       return canvasContext.getImageData(0, 0, canvas.width!, canvas.height!);
     }).catchError((dynamic domExceptionSourceZero) {
       // DOMException: Failed to execute 'getImageData' on 'CanvasRenderingContext2D': The source width is 0.
@@ -397,12 +397,13 @@ class _QRoloState extends State<QRolo> {
       return html.ImageData(1, 1);
     } as FutureOr<html.ImageData?> Function(dynamic err));
 
-    if (imgData.height <= 1) {
+    if (imgData == null || imgData.height <= 1) {
+      // Dart Future dev friction usage
       // This should be null but we had to use a placeholder on Dart beta.
       return;
     }
     // debugPrint(imgData);
-    var code = jsQR(imgData.data, canvas.width!, canvas.height!);
+    final QRCode code = jsQR(imgData.data, canvas.width!, canvas.height!);
     // debugPrint('CODE: $code');
     if (code != null) {
       debugPrint(code.data);
@@ -421,7 +422,7 @@ class _QRoloState extends State<QRolo> {
         final streamInput = _cameraMediaStream;
 
         if (elVideo == null) {
-          debugPrint("Web video is not available");
+          debugPrint('Web video is not available');
 
           return;
         }
