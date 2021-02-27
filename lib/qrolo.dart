@@ -164,29 +164,42 @@ class _QRoloState extends State<QRolo> {
         return;
       }
       try {
-        final dynamic? devices = await (mediaDevices
-                .getUserMedia(constraintsMap) as Future<dynamic?>)
-            .onError(
+        final html.MediaStream deviceStream =
+            await (mediaDevices.getUserMedia(constraintsMap)).onError(
           (html.DomException error, stackTrace) {
             // Paused on promise rejection
             // Error: Expected a value of type 'DomException', but got one of type 'TypeErrorImpl'
             /* 
-          error: DOMException: Permission denied
-          code: 0
-          message: "Permission denied"
-          name: "NotAllowedError"
-          */
-            throw 'Help';
+            error: DOMException: Permission denied
+            code: 0
+            message: "Permission denied"
+            name: "NotAllowedError"
+            */
+            // Poor practice to use errors to control logic flow. goto.
+            // Use return if you want the error to be caught inside catchError()
+            // Use throw if you want the error to be caught inside try/catch.
 
-            return error;
+            // Uncaught (in promise) Error: Expected a value of type 'FutureOr<MediaStream$>',
+            // but got one of type 'Null'
+
+            // We really should not use errors for logic flow..
+            // https://github.com/dart-lang/sdk/issues/44386
+
+            // throw 'Throw crazy error!';
+            // throw 'Help';
+            throw error;
           },
         );
+
+        _cameraMediaStream = deviceStream;
       } catch (err) {
-        debugPrint('t');
+        // Catch-all
+        // NotAllowedError: Permission denied
+        debugPrint('Unable to access camera stream: ${err.toString()}');
         return;
       }
-      final dynamic? mediaStream = null;
 
+      final html.MediaStream? mediaStream = _cameraMediaStream;
       if (mediaStream == null) {
         return;
       }
@@ -199,7 +212,6 @@ class _QRoloState extends State<QRolo> {
         return;
       }
 
-      _cameraMediaStream = stream;
       videoElMediaCanvasSource?.srcObject = _cameraMediaStream;
       // Explicit inline the video within widget.
       // iOS Safari would expand fullscreen automatically once playback begins.
