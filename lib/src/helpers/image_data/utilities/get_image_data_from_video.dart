@@ -1,8 +1,8 @@
 import 'dart:html' show CanvasElement, ImageData, VideoElement;
 
-import 'package:qrolo/src/utilities/canvas/get_context_virtual_draw_context_from_video_element.dart'
+import 'package:qrolo/src/helpers/canvas/get_context_virtual_draw_context_from_video_element.dart'
     show createPredrawnContextualisedCanvasFrameFromVideoElement;
-import 'package:qrolo/src/utilities/get_image_data_from_canvas.dart'
+import 'package:qrolo/src/helpers/image_data/utilities/get_image_data_from_canvas.dart'
     show getImageDataFromCanvas;
 
 /// Draw a virtual canvas to get the image data back..

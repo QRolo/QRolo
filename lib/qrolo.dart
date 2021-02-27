@@ -24,15 +24,16 @@ import 'dart:ui' as ui
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
-import 'package:qrolo/src/utilities/media_devices/is_media_device_camera_available.dart'
-    show isCameraAvailableInMediaDevices;
-import 'package:qrolo/src/utilities/div/consts/video_element_ready_state.dart'
+
+import 'package:qrolo/src/html/div/video/consts/video_element_ready_state.dart'
     show
         haveCurrentData,
         haveEnoughData,
         haveFutureData,
         haveMetadata,
         haveNothing;
+import 'package:qrolo/src/html/media/media_devices/is_media_device_camera_available.dart'
+    show isCameraAvailableInMediaDevices;
 import 'package:qrolo/src/jsqr.dart' show jsQR;
 
 import 'package:js/js.dart' show JS, anonymous;
@@ -98,7 +99,7 @@ class _QRoloState extends State<QRolo> {
     // E.g. converting the videoinput enumerator into for loop for no reason..
     // https://github.com/flutter-webrtc/flutter-webrtc/blob/c2ce4767bcc9635f5f317b134f0500a8c4d482b5/example/lib/src/get_user_media_sample.dart
 
-    const delayDuration = const Duration(
+    const delayDuration = Duration(
       milliseconds: defaultScanIntervalMilliseconds,
     );
 
@@ -109,7 +110,7 @@ class _QRoloState extends State<QRolo> {
     });
   }
 
-  void start() async {
+  Future<void> start() async {
     await _makeCall();
     // if (timer == null || !timer.isActive) {
     //   timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
@@ -127,7 +128,7 @@ class _QRoloState extends State<QRolo> {
     // }
     if (!widget.isCaptureOnTapEnabled) {
       // instead of periodic, which seems to have some timing issues, going to call timer AFTER the capture.
-      Timer(Duration(milliseconds: 200), () {
+      Timer(const Duration(milliseconds: 200), () {
         _captureFrame2();
       });
     }
@@ -170,7 +171,8 @@ class _QRoloState extends State<QRolo> {
        * 'MediaDevices': At least one of audio and video must be
        */
       try {
-        final mediaDevices = html.window.navigator.mediaDevices;
+        final html.MediaDevices? mediaDevices =
+            html.window.navigator.mediaDevices;
       } catch (e) {
         debugPrint('BIG ERROR e.toString()');
 
