@@ -378,15 +378,22 @@ class _QRoloState extends State<QRolo> {
       debugPrint("localstream is null, can't capture frame");
       return null;
     }
-
-    final canvas = getPredrawnContextualisedCanvasFrameCreatedFromVideoElement(
-      videoElement: checkedVideoElementForCanvasSizeDrawing,
+    final html.CanvasElement canvas = html.CanvasElement(
+      width: checkedVideoElementForCanvasSizeDrawing.videoWidth,
+      height: checkedVideoElementForCanvasSizeDrawing.videoHeight,
     );
-    final html.CanvasRenderingContext2D canvasContext = canvas.context2D;
+    final html.CanvasRenderingContext2D ctx = canvas.context2D;
+    // canvas.width = video.videoWidth;
+    // canvas.height = video.videoHeight;
+    ctx.drawImage(
+      checkedVideoElementForCanvasSizeDrawing,
+      0,
+      0,
+    );
 
     // Experiment with error handling in mixed async
     html.ImageData? imgData = await Future.sync(() {
-      return canvasContext.getImageData(0, 0, canvas.width!, canvas.height!);
+      return ctx.getImageData(0, 0, canvas.width!, canvas.height!);
     }).catchError((dynamic domExceptionSourceZero) {
       // DOMException: Failed to execute 'getImageData' on 'CanvasRenderingContext2D': The source width is 0.
       debugPrint(domExceptionSourceZero.toString());
